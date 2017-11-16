@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Clicker Heroes save editor</title>
+
+        <script type="text/javascript" src="pako.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js"></script>
+      <script type="text/javascript" src="script.js"></script>
+      <script type="text/javascript" src="deep-diff-0.3.8.min.js"></script>
+
+   </head>
+    <body>
+        <input type="button" id="decode" value="Decode" onclick="decode()">
+        <input type="button" id="encodenew" value="Encode for 1.0e10" onclick="encodeNew()" disabled>
+        <input type="button" id="encodeold"value="Encode for 1.0e10 or older" onclick="encodeOld()" disabled>
+        <input type="button" id="convert" value="Convert to mobile" onclick="convertSave()" disabled>
+        <input type="button" id="wipe" value="Wipe clan data" onclick="wipeClan()" disabled>
+        <br />
+        <textarea oninput="detectinput()" style="width:70%; margin-top:10px" rows="40"
+         class="textarea" placeholder="" id="textbox"></textarea>
+
+   </body>
+</html>
