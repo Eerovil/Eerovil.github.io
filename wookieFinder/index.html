@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Find text within text</title>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script type="text/javascript" src="script.js"></script>
+        <style>
+            .whitetext { color:white;}
+            .greentext { color:saddlebrown;}
+            textarea {width: 50%}
+        </style>
+   </head>
+    <body>
+        <textarea id="textToFind" onclick="this.select()">What about the droid attack on the wookies</textarea> 
+        <br />
+        <input type="button" id="find" value="Find" onclick="find()">
+        <br />
+        <textarea style="margin-top:10px;" rows="10";
+         class="textarea" placeholder="" id="textbox"
+         onclick="this.select()"></textarea>
+         <br />
+         <div id="result">
+
+
+         </div>
+
+   </body>
+</html>
