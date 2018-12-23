@@ -116,6 +116,14 @@ function setPhoto(mediaItem) {
     // img.style['margin-left'] = `-${img.offsetWidth / 2}px`;
 }
 
+function preloadMediaItem(mediaItem) {
+    if (mediaItem.mimeType.indexOf('image/') === 0) {
+        (new Image()).src = buildFullUrl(mediaItem);
+    } else if (mediaItem.mimeType.indexOf('video/') === 0) {
+        return;
+    }
+}
+
 function buildFullUrl(mediaItem) {
     return mediaItem.baseUrl + "=w2048-h1024";
 }
@@ -141,17 +149,19 @@ function listPhotos() {
         }
         nextPageToken = response.nextPageToken;
         for (let i=0; i<mediaItems.length; i++) {
+            let mediaItem = mediaItems[i];
             let el = document.createElement('a')
             el.href = "#"
             el.onclick = function(event) {
                 event.preventDefault();
-                setPhoto(mediaItems[i]);
+                setPhoto(mediaItem);
                 return false;
             }
             let img = document.createElement('IMG');
-            img.src = thumbnail(mediaItems[i]);
+            img.src = thumbnail(mediaItem);
             el.appendChild(img);
             photos_list.appendChild(el);
+            preloadMediaItem(mediaItem);
         }
         listing = false;
         console.log(response);
