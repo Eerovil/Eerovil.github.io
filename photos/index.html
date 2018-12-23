@@ -1,42 +1,13 @@
 <head>
-<script type="text/javascript" src="index.js"></script>
 <style>
-body {
-    background: black;
-}
-#photo_big {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-70%);
-    max-height: -webkit-fill-available;
-}
-#photo_big.loading {
-  background: black url(/loading.gif) center center no-repeat;
-}
+html, body {margin: 0; height: 100%; overflow: hidden}
+
 </style>
 </head>
 
+
+
 <body>
-<button id="sign-in-or-out-button"
-        style="margin-left: 25px">Sign In/Authorize</button>
-<button id="revoke-access-button"
-        style="display: none; margin-left: 25px">Revoke access</button>
-
-<div id="auth-status" style="display: inline; padding-left: 25px"></div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script async defer src="https://apis.google.com/js/api.js" 
-        onload="this.onload=function(){};handleClientLoad()" 
-        onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
-<table>
-<tr>
-<td style="width: 80%">
-<div id="photo_big"></div>
-</td>
-<td>
-<div id="photos_list"></div>
-</td></tr>
-</table>
+<iframe id="leftframe" name="leftframe" src="big.html" scrolling="no" style="position:absolute;top:0;left:0;width:80%;height:100%;"></iframe>
+<iframe id="rightframe" name="rightframe" src="list.html" style="position:absolute;top:0;left:80%;width:20%;height:100%;"></iframe>
 </body>

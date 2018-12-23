@@ -83,7 +83,7 @@ function updateSigninStatus(isSignedIn) {
 }
 
 function setPhoto(mediaItem) {
-    const photo_big = document.getElementById('photo_big');
+    const photo_big = parent.leftframe.document.getElementById('photo_big');
     let el;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
         const url = buildFullUrl(mediaItem);
@@ -134,7 +134,7 @@ function listPhotos() {
     });
     // Execute the API request.
     request.execute(function(response) {
-        mediaItems = response.mediaItems;
+        let mediaItems = response.mediaItems;
         const photos_list = document.getElementById('photos_list');
         if (nextPageToken === null) {
             setPhoto(mediaItems[0]);
@@ -159,7 +159,7 @@ function listPhotos() {
 }
 
 window.onscroll = function(ev) {
-    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 5000) {
+    if ((document.body.scrollTop) >= document.body.scrollHeight - 5000) {
         if (!listing){
             listPhotos();
         }
