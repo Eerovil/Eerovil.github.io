@@ -93,8 +93,8 @@ function setPhoto(mediaItem) {
         const url = mediaItem.baseUrl + "=dv";
         el = document.createElement('video');
         el.autoplay = true;
-        el.height = screen.height;
-        el.width = screen.width * 0.8;
+        el.height = parent.document.body.scrollHeight;
+        el.width = parent.document.body.scrollWidth * 0.8;
         el.src = url;
         el.addEventListener('loadstart', function (event) {
             photo_big.classList.add('loading');
