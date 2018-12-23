@@ -7,9 +7,9 @@
     "background_color": "#111111",
     "icons": [
       {
-        "src": "loading.gif",
+        "src": "icon.png",
         "sizes": "192x192",
-        "type": "image/gif"
+        "type": "image/png"
       }
     ]
   }
