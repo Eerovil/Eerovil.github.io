@@ -212,6 +212,7 @@ function listPhotos() {
             img.src = thumbnail(mediaItem);
             el.appendChild(img);
             photos_list.appendChild(el);
+            photos_list.appendChild(document.createElement('hr'))
             preloadMediaItem(mediaItem);
         }
         listing = false;
