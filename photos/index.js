@@ -103,9 +103,9 @@ function setPhoto(mediaItem) {
             el.src = url;
         }
         el.autoplay = true;
+        el.controls = "true";
         el.height = parent.document.body.scrollHeight;
         el.width = parent.document.body.scrollWidth * 0.8;
-        el.play();
         el.addEventListener('loadstart', function (event) {
             photo_big.classList.add('loading');
             photo_big.poster = '';
@@ -121,6 +121,7 @@ function setPhoto(mediaItem) {
         if (mimeType === 'video') {
             preloaded.appendChild(photo_big.firstChild);
             photo_big.appendChild(el);
+            el.play();
         } else {
             photo_big.replaceChild(el, photo_big.firstChild);
         }
