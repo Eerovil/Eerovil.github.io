@@ -84,18 +84,28 @@ function updateSigninStatus(isSignedIn) {
 
 function setPhoto(mediaItem) {
     const photo_big = parent.leftframe.document.getElementById('photo_big');
+    const preloaded = parent.leftframe.document.getElementById('preloaded');
     let el;
+    let mimeType;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
+        mimeType = 'image';
         const url = buildFullUrl(mediaItem);
         el = document.createElement('img');
         el.src = url;
     } else if (mediaItem.mimeType.indexOf('video/') === 0) {
-        const url = mediaItem.baseUrl + "=dv";
-        el = document.createElement('video');
+        mimeType = 'video';
+        let preloaded = parent.leftframe.document.getElementById(mediaItem.id);
+        if (preloaded !== null) {
+            el = preloaded;
+        } else {
+            const url = mediaItem.baseUrl + "=dv";
+            el = document.createElement('video');
+            el.src = url;
+        }
         el.autoplay = true;
         el.height = parent.document.body.scrollHeight;
         el.width = parent.document.body.scrollWidth * 0.8;
-        el.src = url;
+        el.play();
         el.addEventListener('loadstart', function (event) {
             photo_big.classList.add('loading');
             photo_big.poster = '';
@@ -108,7 +118,12 @@ function setPhoto(mediaItem) {
         return;
     }
     if (photo_big.firstChild) {
-        photo_big.replaceChild(el, photo_big.firstChild);
+        if (mimeType === 'video') {
+            preloaded.appendChild(photo_big.firstChild);
+            photo_big.appendChild(el);
+        } else {
+            photo_big.replaceChild(el, photo_big.firstChild);
+        }
     } else {
         photo_big.appendChild(el);
     }
@@ -120,10 +135,27 @@ function preloadMediaItem(mediaItem) {
     if (mediaItem.mimeType.indexOf('image/') === 0) {
         (new Image()).src = buildFullUrl(mediaItem);
     } else if (mediaItem.mimeType.indexOf('video/') === 0) {
-        return;
+        const container = parent.leftframe.document.getElementById('preloaded');
+        let el = document.createElement('VIDEO');
+        el.height = parent.document.body.scrollHeight;
+        el.width = parent.document.body.scrollWidth * 0.8;
+        el.src = videoUrl(mediaItem);
+        el.id = mediaItem.id;
+        el.preload = 'auto';
+        el.play().then(function() {
+            el.pause();
+        });
+
+        container.appendChild(el);
+        if (container.childElementCount > 50) {
+            container.remove(container.firstChild)
+        }
     }
 }
 
+function videoUrl(mediaItem) {
+    return mediaItem.baseUrl + "=dv";
+}
 function buildFullUrl(mediaItem) {
     return mediaItem.baseUrl + "=w2048-h1024";
 }
