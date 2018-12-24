@@ -94,9 +94,9 @@ function setPhoto(mediaItem) {
         el.src = url;
     } else if (mediaItem.mimeType.indexOf('video/') === 0) {
         mimeType = 'video';
-        let preloaded = parent.leftframe.document.getElementById(mediaItem.id);
-        if (preloaded !== null) {
-            el = preloaded;
+        let el_preloaded = parent.leftframe.document.getElementById(mediaItem.id);
+        if (el_preloaded !== null) {
+            el = el_preloaded;
         } else {
             const url = mediaItem.baseUrl + "=dv";
             el = document.createElement('video');
