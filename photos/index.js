@@ -84,6 +84,9 @@ function updateSigninStatus(isSignedIn) {
 
 function setPhoto(mediaItem) {
     const photo_big = parent.leftframe.document.getElementById('photo_big');
+    if (photo_big.firstChild && photo_big.firstChild.id == mediaItem.id) {
+        return;
+    }
     let el;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
         const url = buildFullUrl(mediaItem);
@@ -108,6 +111,7 @@ function setPhoto(mediaItem) {
     } else {
         return;
     }
+    el.id = mediaItem.id;
     if (photo_big.firstChild) {
         photo_big.replaceChild(el, photo_big.firstChild);
     } else {
