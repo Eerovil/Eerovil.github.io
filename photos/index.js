@@ -93,6 +93,7 @@ function setPhoto(mediaItem) {
         const url = mediaItem.baseUrl + "=dv";
         el = document.createElement('video');
         el.autoplay = true;
+        el.controls = "true";
         el.height = parent.document.body.scrollHeight;
         el.width = parent.document.body.scrollWidth * 0.8;
         el.src = url;
