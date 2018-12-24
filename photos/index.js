@@ -142,9 +142,6 @@ function preloadMediaItem(mediaItem) {
         el.src = videoUrl(mediaItem);
         el.id = mediaItem.id;
         el.preload = 'auto';
-        el.play().then(function() {
-            el.pause();
-        });
 
         container.appendChild(el);
         if (container.childElementCount > 50) {
