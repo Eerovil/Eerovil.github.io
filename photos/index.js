@@ -137,7 +137,7 @@ function thumbnail(mediaItem) {
 }
 var nextPageToken = null; 
 var listing = true;
-var albumId = "AI0fBncI82iWb2XswuHX4aOhQwikPsc2edZzxIvheJatKc4e0a3ofVH8V_SXRJOLz_Nr_wTzQk5c";
+var albumId = null;
 function listAlbums() {
     let request = gapi.client.request({
         'method': 'GET',
