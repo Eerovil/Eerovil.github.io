@@ -68,7 +68,7 @@ function setSigninStatus(isSignedIn) {
     $("#auth-status").html('');
     //   "You are currently signed in and have granted " + "access to this app."
     // );
-    listPhotos();
+    listAlbums();
   } else {
     $("#sign-in-or-out-button").html("Sign In/Authorize");
     $("#revoke-access-button").css("display", "none");
@@ -137,14 +137,59 @@ function thumbnail(mediaItem) {
 }
 var nextPageToken = null; 
 var listing = true;
+var albumId = "AI0fBncI82iWb2XswuHX4aOhQwikPsc2edZzxIvheJatKc4e0a3ofVH8V_SXRJOLz_Nr_wTzQk5c";
+function listAlbums() {
+    let request = gapi.client.request({
+        'method': 'GET',
+        'path': 'https://photoslibrary.googleapis.com/v1/albums',
+        'params': {pageSize: 50}
+    });
+    request.execute(function(response) {
+        console.log(response)
+        const container = document.getElementById('photos_list')
+        let createAlbum = function(title, id) {
+            let el = document.createElement('a');
+            el.id = id
+            el.innerHTML = title
+            el.href = "#"
+            el.onclick = function(event) {
+                event.preventDefault();
+                albumId = event.target.id !== "null" ? event.target.id : null
+                container.innerHTML = ""
+                listPhotos();
+                return false;
+            }
+            container.appendChild(el)
+            container.appendChild(document.createElement('br'))
+        }
+        createAlbum("Kaikki kuvat", null);
+        for (let i=0; i<response.albums.length; i++) {
+            let album = response.albums[i];
+            createAlbum(album.title, album.id);
+        }
+    });
+}
+
 function listPhotos() {
     listing = true;
     // Example 2: Use gapi.client.request(args) function
-    var request = gapi.client.request({
-    'method': 'GET',
-    'path': 'https://photoslibrary.googleapis.com/v1/mediaItems',
-    'params': {pageToken: nextPageToken}
-    });
+    if (nextPageToken === "stop") {
+        return;
+    }
+    var request;
+    if (albumId === null){
+        request = gapi.client.request({
+        'method': 'GET',
+        'path': 'https://photoslibrary.googleapis.com/v1/mediaItems',
+        'params': {pageToken: nextPageToken}
+        });
+    } else {
+        request = gapi.client.request({
+        'method': 'POST',
+        'path': 'https://photoslibrary.googleapis.com/v1/mediaItems:search',
+        'params': {pageToken: nextPageToken, albumId: albumId}
+        });
+    }
     // Execute the API request.
     request.execute(function(response) {
         let mediaItems = response.mediaItems;
@@ -152,7 +197,7 @@ function listPhotos() {
         if (nextPageToken === null) {
             setPhoto(mediaItems[0]);
         }
-        nextPageToken = response.nextPageToken;
+        nextPageToken = response.nextPageToken || "stop";
         for (let i=0; i<mediaItems.length; i++) {
             let mediaItem = mediaItems[i];
             let el = document.createElement('a')
