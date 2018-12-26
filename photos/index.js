@@ -171,6 +171,39 @@ function listAlbums() {
     });
 }
 
+class queueObj {
+    constructor() {
+        this.queue = [];
+        this.running = false;
+    }
+    addToQueue(url) {
+        this.queue.push(url);
+        this.run();
+    }
+    run() {
+        if (this.running || this.queue.length == 0) {
+            return;
+        }
+        this.running = true;
+        const item = this.queue.pop();
+        let img = item.el || new Image();
+        img.src = item.url;
+        const self = this;
+        if(img.width){
+            this.deQueue();
+        }else{
+            img.onload = function(){
+                self.deQueue();
+            }
+        }
+    }
+    deQueue() {
+        this.running = false;
+        this.run();
+    }
+}
+thumbnailQueue = new queueObj();
+preloadlQueue = new queueObj();
 function listPhotos() {
     // Example 2: Use gapi.client.request(args) function
     if (nextPageToken === "stop") {
@@ -199,6 +232,7 @@ function listPhotos() {
         containers.push(container);
     }
     // Execute the API request.
+    
     request.execute(function(response) {
         let mediaItems = response.mediaItems;
         const photos_list = document.getElementById('photos_list');
@@ -216,7 +250,7 @@ function listPhotos() {
                 return false;
             }
             let img = document.createElement('IMG');
-            img.src = thumbnail(mediaItem);
+            thumbnailQueue.addToQueue({el: img, url: thumbnail(mediaItem)});
             el.appendChild(img);
             const container = containers.pop();
             if (container == undefined) {
@@ -224,7 +258,7 @@ function listPhotos() {
                 console.log("WARNING: containers list is empty");
             }
             container.appendChild(el);
-            preloadMediaItem(mediaItem);
+            preloadlQueue.addToQueue({el: null, url: buildFullUrl(mediaItem)});
         }
         for (let i=0; i<containers.length; i++) {
             console.log("WARNING: got too few items: " + containers.length);
@@ -232,7 +266,7 @@ function listPhotos() {
             photos_list.removeChild(containers[i]);
         }
         console.log(response);
-    });   
+    });
 }
 
 window.onscroll = function(ev) {
