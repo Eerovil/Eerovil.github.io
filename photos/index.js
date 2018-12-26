@@ -172,7 +172,6 @@ function listAlbums() {
 }
 
 function listPhotos() {
-    listing = true;
     // Example 2: Use gapi.client.request(args) function
     if (nextPageToken === "stop") {
         return;
@@ -190,6 +189,13 @@ function listPhotos() {
         'path': 'https://photoslibrary.googleapis.com/v1/mediaItems:search',
         'params': {pageToken: nextPageToken, albumId: albumId}
         });
+    }
+    // Create the containers right away
+    let containers = [];
+    for (let i=0; i<25; i++) {
+        let container = document.createElement('div');
+        photos_list.appendChild(container);
+        containers.push(container);
     }
     // Execute the API request.
     request.execute(function(response) {
@@ -211,20 +217,22 @@ function listPhotos() {
             let img = document.createElement('IMG');
             img.src = thumbnail(mediaItem);
             el.appendChild(img);
-            photos_list.appendChild(el);
-            photos_list.appendChild(document.createElement('hr'))
+            const container = containers.pop();
+            if (container == undefined) {
+                container = document.createElement('div');
+                console.log("WARNING: containers list is empty");
+            }
+            container.appendChild(el);
+            container.appendChild(document.createElement('hr'))
             preloadMediaItem(mediaItem);
         }
-        listing = false;
         console.log(response);
     });   
 }
 
 window.onscroll = function(ev) {
     if ((document.body.scrollTop) >= document.body.scrollHeight - 5000) {
-        if (!listing){
-            listPhotos();
-        }
+        listPhotos();
     }
 };
 
