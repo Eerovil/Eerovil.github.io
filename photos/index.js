@@ -195,6 +195,7 @@ function listPhotos() {
     for (let i=0; i<25; i++) {
         let container = document.createElement('div');
         photos_list.appendChild(container);
+        photos_list.appendChild(document.createElement('hr'))
         containers.push(container);
     }
     // Execute the API request.
@@ -223,8 +224,12 @@ function listPhotos() {
                 console.log("WARNING: containers list is empty");
             }
             container.appendChild(el);
-            container.appendChild(document.createElement('hr'))
             preloadMediaItem(mediaItem);
+        }
+        for (let i=0; i<containers.length; i++) {
+            console.log("WARNING: got too few items: " + containers.length);
+            photos_list.removeChild(containers[i].nextSibling);
+            photos_list.removeChild(containers[i]);
         }
         console.log(response);
     });   
