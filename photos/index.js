@@ -239,6 +239,7 @@ requestQueue.handleItem = function(item) {
             el.onclick = function(event) {
                 event.preventDefault();
                 setPhoto(mediaItem);
+                event.target.parentElement.parentNode.nextSibling.scrollIntoView();
                 return false;
             }
             let img = document.createElement('IMG');
