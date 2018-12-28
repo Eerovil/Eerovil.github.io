@@ -239,7 +239,14 @@ requestQueue.handleItem = function(item) {
             el.onclick = function(event) {
                 event.preventDefault();
                 setPhoto(mediaItem);
-                event.target.parentElement.parentNode.nextSibling.scrollIntoView();
+                window.setTimeout(function() {
+                    const divEl = event.target.parentElement.parentNode.nextSibling.nextSibling;
+                    window.scrollTo({
+                        top: (divEl.offsetTop - divEl.offsetHeight / 2) - (window.outerHeight / 2),
+                        left: 0,
+                        behavior: 'smooth'
+                    }); 
+                }, 200)
                 return false;
             }
             let img = document.createElement('IMG');
