@@ -186,6 +186,9 @@ class queueObj {
         }
         this.running = true;
         const item = this.queue.pop();
+        this.handleItem(item);
+    }
+    handleItem(item) {
         let img = item.el || new Image();
         img.src = item.url;
         const self = this;
@@ -204,12 +207,9 @@ class queueObj {
 }
 thumbnailQueue = new queueObj();
 preloadlQueue = new queueObj();
-function listPhotos() {
-    // Example 2: Use gapi.client.request(args) function
-    if (nextPageToken === "stop") {
-        return;
-    }
-    var request;
+requestQueue = new queueObj();
+requestQueue.handleItem = function(item) {
+    let request;
     if (albumId === null){
         request = gapi.client.request({
         'method': 'GET',
@@ -223,16 +223,8 @@ function listPhotos() {
         'params': {pageToken: nextPageToken, albumId: albumId}
         });
     }
-    // Create the containers right away
-    let containers = [];
-    for (let i=0; i<25; i++) {
-        let container = document.createElement('div');
-        photos_list.appendChild(container);
-        photos_list.appendChild(document.createElement('hr'))
-        containers.push(container);
-    }
-    // Execute the API request.
-    
+    const containers = item.containers;
+    const self = this;
     request.execute(function(response) {
         let mediaItems = response.mediaItems;
         const photos_list = document.getElementById('photos_list');
@@ -266,7 +258,25 @@ function listPhotos() {
             photos_list.removeChild(containers[i]);
         }
         console.log(response);
+        self.deQueue();
     });
+}
+function listPhotos() {
+    const photos_list = document.getElementById('photos_list');
+    // Example 2: Use gapi.client.request(args) function
+    if (nextPageToken === "stop") {
+        return;
+    }
+    // Create the containers right away
+    let containers = [];
+    for (let i=0; i<25; i++) {
+        let container = document.createElement('div');
+        photos_list.appendChild(container);
+        photos_list.appendChild(document.createElement('hr'))
+        containers.push(container);
+    }
+    // Execute the API request.
+    requestQueue.addToQueue({containers});
 }
 
 window.onscroll = function(ev) {
