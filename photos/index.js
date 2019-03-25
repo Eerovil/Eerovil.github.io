@@ -83,10 +83,15 @@ function updateSigninStatus(isSignedIn) {
 }
 
 function setPhoto(mediaItem) {
-    const photo_big = parent.leftframe.document.getElementById('photo_big');
+    const photo_big = document.getElementById('photo_big');
+    if (mediaItem == null) {
+        photo_big.classList.add('hidden')
+        return;
+    }
     if (photo_big.firstChild && photo_big.firstChild.id == mediaItem.id) {
         return;
     }
+    photo_big.classList.remove('hidden')
     let el;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
         const url = buildFullUrl(mediaItem);
@@ -98,8 +103,8 @@ function setPhoto(mediaItem) {
         el.autoplay = true;
         el.controls = "true";
         el.loop = "true"
-        el.height = parent.document.body.scrollHeight;
-        el.width = parent.document.body.scrollWidth * 0.8;
+        el.height = window.innerHeight;
+        el.width = document.body.scrollWidth * 0.8;
         el.src = url;
         el.addEventListener('loadstart', function (event) {
             photo_big.classList.add('loading');
@@ -157,7 +162,9 @@ function listAlbums() {
                 event.preventDefault();
                 albumId = event.target.id !== "null" ? event.target.id : null
                 container.innerHTML = ""
-                listPhotos();
+                while ((document.body.scrollTop) >= document.body.scrollHeight - 1500) {
+                    listPhotos();
+                }
                 return false;
             }
             container.appendChild(el)
@@ -214,13 +221,13 @@ requestQueue.handleItem = function(item) {
         request = gapi.client.request({
         'method': 'GET',
         'path': 'https://photoslibrary.googleapis.com/v1/mediaItems',
-        'params': {pageToken: nextPageToken}
+        'params': {pageToken: nextPageToken, pageSize: 100}
         });
     } else {
         request = gapi.client.request({
         'method': 'POST',
         'path': 'https://photoslibrary.googleapis.com/v1/mediaItems:search',
-        'params': {pageToken: nextPageToken, albumId: albumId}
+        'params': {pageToken: nextPageToken, pageSize: 100, albumId: albumId}
         });
     }
     const containers = item.containers;
@@ -239,57 +246,103 @@ requestQueue.handleItem = function(item) {
             el.onclick = function(event) {
                 event.preventDefault();
                 setPhoto(mediaItem);
-                window.setTimeout(function() {
-                    const divEl = event.target.parentElement.parentNode.nextSibling.nextSibling;
-                    window.scrollTo({
-                        top: (divEl.offsetTop - divEl.offsetHeight / 2) - (window.outerHeight / 2),
-                        left: 0,
-                        behavior: 'smooth'
-                    }); 
-                }, 200)
                 return false;
             }
-            let img = document.createElement('IMG');
-            thumbnailQueue.addToQueue({el: img, url: thumbnail(mediaItem)});
-            el.appendChild(img);
-            const container = containers.pop();
-            if (container == undefined) {
-                container = document.createElement('div');
-                console.log("WARNING: containers list is empty");
+            const container = containers[i];
+            container.mediaItem = mediaItem;
+            container.element.appendChild(el);
+            container.a = el;
+            if (isScrolledIntoView(container.element)) {
+                loadContainer(container)
             }
-            container.appendChild(el);
-            preloadlQueue.addToQueue({el: null, url: buildFullUrl(mediaItem)});
         }
-        for (let i=0; i<containers.length; i++) {
-            console.log("WARNING: got too few items: " + containers.length);
-            photos_list.removeChild(containers[i].nextSibling);
-            photos_list.removeChild(containers[i]);
-        }
+        // for (let i=mediaItems.length; i<containers.length; i++) {
+        //     console.log("WARNING: got too few items: " + containers.length);
+        //     try {
+        //         photos_list.removeChild(containers[i].element);
+        //     } catch (e) {
+        //         console.log(e)
+        //     }
+        // }
+        // containers.splice(mediaItems.length, containers.length);
         console.log(response);
         self.deQueue();
     });
 }
+
+function loadContainer(container) {
+    if (container.loaded || container.a == undefined) {
+        return
+    }
+    console.log("loadcontainer " + container)
+    const el = container.a;
+    let img = document.createElement('IMG');
+    thumbnailQueue.addToQueue({el: img, url: thumbnail(container.mediaItem)});
+    el.appendChild(img);
+    if (container.element == undefined) {
+        container.element = document.createElement('div');
+        console.log("WARNING: containers list is empty");
+    }
+    container.element.appendChild(el);
+    container.img = img;
+    container.loaded = true;
+    //preloadlQueue.addToQueue({el: null, url: buildFullUrl(mediaItem)});
+}
+function unloadContainer(container) {
+    if (!container.loaded) {
+        return
+    }
+    console.log("unloadcontainer " + container)
+    container.a.removeChild(container.img);
+    container.loaded = false;
+    
+}
+
+function isScrolledIntoView(el) {
+    var rect = el.getBoundingClientRect();
+    var elemTop = rect.top;
+    var elemBottom = rect.bottom;
+
+    // Only completely visible elements return true:
+    var isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+    // Partially visible elements return true:
+    //isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+    return isVisible;
+}
+
+var all_containers = [];
+
 function listPhotos() {
+    console.log("listPhotos called")
     const photos_list = document.getElementById('photos_list');
     // Example 2: Use gapi.client.request(args) function
     if (nextPageToken === "stop") {
         return;
     }
+    let subcontainers = [];
     // Create the containers right away
-    let containers = [];
-    for (let i=0; i<25; i++) {
+    for (let i=0; i<100; i++) {
         let container = document.createElement('div');
         photos_list.appendChild(container);
-        photos_list.appendChild(document.createElement('hr'))
-        containers.push(container);
+        subcontainers.push({element: container});
     }
-    // Execute the API request.
-    requestQueue.addToQueue({containers});
+    all_containers.push(subcontainers);
+    requestQueue.addToQueue({containers: subcontainers});
 }
 
 window.onscroll = function(ev) {
-    if ((document.body.scrollTop) >= document.body.scrollHeight - 5000) {
+    if ((document.body.scrollTop) >= document.body.scrollHeight - 1500) {
         listPhotos();
+    }
+    for (let i=0; i<all_containers.length; i++) {
+        for (let j=0; j<all_containers[i].length; j++) {
+            const container = all_containers[i][j];
+            if (isScrolledIntoView(container.element)) {
+                loadContainer(container);
+            } else {
+                unloadContainer(container)
+            }
+        }
     }
 };
 
