@@ -88,9 +88,6 @@ function setPhoto(mediaItem) {
         photo_big.classList.add('hidden')
         return;
     }
-    if (photo_big.firstChild && photo_big.firstChild.id == mediaItem.id) {
-        return;
-    }
     photo_big.classList.remove('hidden')
     let el;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
@@ -104,7 +101,7 @@ function setPhoto(mediaItem) {
         el.controls = "true";
         el.loop = "true"
         el.height = window.innerHeight;
-        el.width = document.body.scrollWidth * 0.8;
+        el.width = window.innerWidth;
         el.src = url;
         el.addEventListener('loadstart', function (event) {
             photo_big.classList.add('loading');
@@ -114,6 +111,9 @@ function setPhoto(mediaItem) {
             photo_big.classList.remove('loading');
             photo_big.poster = '';
         });
+        el.addEventListener('touchend', function() {
+            setPhoto(null)
+        })
     } else {
         return;
     }
@@ -235,9 +235,6 @@ requestQueue.handleItem = function(item) {
     request.execute(function(response) {
         let mediaItems = response.mediaItems;
         const photos_list = document.getElementById('photos_list');
-        if (nextPageToken === null) {
-            setPhoto(mediaItems[0]);
-        }
         nextPageToken = response.nextPageToken || "stop";
         for (let i=0; i<mediaItems.length; i++) {
             let mediaItem = mediaItems[i];
