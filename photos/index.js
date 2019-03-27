@@ -85,6 +85,10 @@ function updateSigninStatus(isSignedIn) {
 function setPhoto(mediaItem) {
     const photo_big = document.getElementById('photo_big');
     if (mediaItem == null) {
+        if (!get_prevent_taps()) {
+            return;
+        }
+        photo_big.removeChild(photo_big.firstChild);
         photo_big.classList.add('hidden')
         return;
     }
@@ -111,8 +115,9 @@ function setPhoto(mediaItem) {
             photo_big.classList.remove('loading');
             photo_big.poster = '';
         });
-        el.addEventListener('touchend', function() {
-            setPhoto(null)
+        el.addEventListener('touchend touchstart touchup', function(event) {
+            setPhoto(null);
+            event.stopPropagation();
         })
     } else {
         return;
@@ -241,6 +246,10 @@ requestQueue.handleItem = function(item) {
             let el = document.createElement('a')
             el.href = "#"
             el.onclick = function(event) {
+                if (!get_prevent_taps()) {
+                    return;
+                }
+
                 event.preventDefault();
                 setPhoto(mediaItem);
                 return false;
@@ -308,6 +317,18 @@ function isScrolledIntoView(el) {
 }
 
 var all_containers = [];
+
+var prevent_taps = false;
+function get_prevent_taps() {
+    if (prevent_taps) {
+        return false;
+    }
+    prevent_taps = true;
+    setTimeout(function() {
+        prevent_taps = false;
+    }, 500);
+    return true;
+}
 
 function listPhotos() {
     console.log("listPhotos called")
