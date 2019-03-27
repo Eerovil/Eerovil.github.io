@@ -84,15 +84,18 @@ function updateSigninStatus(isSignedIn) {
 
 function setPhoto(mediaItem) {
     const photo_big = document.getElementById('photo_big');
+    const photo_overlay = document.getElementById('photo_overlay');
     if (mediaItem == null) {
         if (!get_prevent_taps()) {
             return;
         }
         photo_big.removeChild(photo_big.firstChild);
         photo_big.classList.add('hidden')
+        photo_overlay.classList.add('hidden')
         return;
     }
     photo_big.classList.remove('hidden')
+    photo_overlay.classList.remove('hidden')
     let el;
     if (mediaItem.mimeType.indexOf('image/') === 0) {
         const url = buildFullUrl(mediaItem);
