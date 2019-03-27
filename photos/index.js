@@ -115,10 +115,6 @@ function setPhoto(mediaItem) {
             photo_big.classList.remove('loading');
             photo_big.poster = '';
         });
-        el.addEventListener('touchend touchstart touchup', function(event) {
-            setPhoto(null);
-            event.stopPropagation();
-        })
     } else {
         return;
     }
