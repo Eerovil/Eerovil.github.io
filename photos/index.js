@@ -430,9 +430,9 @@ function detectswipe(el,func) {
 window.addEventListener('load', function() {
     console.log("Initializing swipe")
     detectswipe('photo_overlay', function(el, d) {
-        if (d == 'l') {
+        if (d == 'r') {
             setPhoto(getMediaItem(currentMediaItem, false))
-        } else if (d == 'r') {
+        } else if (d == 'l') {
             setPhoto(getMediaItem(currentMediaItem, true))
         }
     })
