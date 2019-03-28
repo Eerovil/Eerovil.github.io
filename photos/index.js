@@ -82,6 +82,8 @@ function updateSigninStatus(isSignedIn) {
   setSigninStatus();
 }
 
+var currentMediaItem = null;
+
 function setPhoto(mediaItem) {
     const photo_big = document.getElementById('photo_big');
     const photo_overlay = document.getElementById('photo_overlay');
@@ -89,11 +91,13 @@ function setPhoto(mediaItem) {
         if (!get_prevent_taps()) {
             return;
         }
+        currentMediaItem = mediaItem;
         photo_big.removeChild(photo_big.firstChild);
         photo_big.classList.add('hidden')
         photo_overlay.classList.add('hidden')
         return;
     }
+    currentMediaItem = mediaItem;
     photo_big.classList.remove('hidden')
     photo_overlay.classList.remove('hidden')
     let el;
@@ -129,6 +133,27 @@ function setPhoto(mediaItem) {
     }
     // console.log(img.offsetWidth);
     // img.style['margin-left'] = `-${img.offsetWidth / 2}px`;
+}
+
+function getMediaItem(mediaItem, next) {
+    let prev = null;
+    let return_next = false;
+    for (let i=0; i<all_containers.length; i++) {
+        for (let j=0; j<all_containers[i].length; j++) {
+            const container = all_containers[i][j];
+            if (return_next) {
+                return container.mediaItem;
+            }
+            if (container.mediaItem == mediaItem) {
+                if (next) {
+                    return_next = true;
+                } else {
+                    return prev;
+                }
+            }
+            prev = container.mediaItem;
+        }
+    }
 }
 
 function preloadMediaItem(mediaItem) {
@@ -362,5 +387,53 @@ window.onscroll = function(ev) {
         }
     }
 };
+function detectswipe(el,func) {
+    swipe_det = new Object();
+    swipe_det.sX = 0; swipe_det.sY = 0; swipe_det.eX = 0; swipe_det.eY = 0;
+    var min_x = 30;  //min x swipe for horizontal swipe
+    var max_x = 30;  //max x difference for vertical swipe
+    var min_y = 50;  //min y swipe for vertical swipe
+    var max_y = 60;  //max y difference for horizontal swipe
+    var direc = "";
+    ele = document.getElementById(el);
+    ele.addEventListener('touchstart',function(e){
+      var t = e.touches[0];
+      swipe_det.sX = t.screenX; 
+      swipe_det.sY = t.screenY;
+    },false);
+    ele.addEventListener('touchmove',function(e){
+      e.preventDefault();
+      var t = e.touches[0];
+      swipe_det.eX = t.screenX; 
+      swipe_det.eY = t.screenY;    
+    },false);
+    ele.addEventListener('touchend',function(e){
+      //horizontal detection
+      if ((((swipe_det.eX - min_x > swipe_det.sX) || (swipe_det.eX + min_x < swipe_det.sX)) && ((swipe_det.eY < swipe_det.sY + max_y) && (swipe_det.sY > swipe_det.eY - max_y) && (swipe_det.eX > 0)))) {
+        if(swipe_det.eX > swipe_det.sX) direc = "r";
+        else direc = "l";
+      }
+      //vertical detection
+      else if ((((swipe_det.eY - min_y > swipe_det.sY) || (swipe_det.eY + min_y < swipe_det.sY)) && ((swipe_det.eX < swipe_det.sX + max_x) && (swipe_det.sX > swipe_det.eX - max_x) && (swipe_det.eY > 0)))) {
+        if(swipe_det.eY > swipe_det.sY) direc = "d";
+        else direc = "u";
+      }
+  
+      if (direc != "") {
+        if(typeof func == 'function') func(el,direc);
+      }
+      direc = "";
+      swipe_det.sX = 0; swipe_det.sY = 0; swipe_det.eX = 0; swipe_det.eY = 0;
+    },false);  
+  }
 
-
+window.addEventListener('load', function() {
+    console.log("Initializing swipe")
+    detectswipe('photo_overlay', function(el, d) {
+        if (d == 'l') {
+            setPhoto(getMediaItem(currentMediaItem, false))
+        } else if (d == 'r') {
+            setPhoto(getMediaItem(currentMediaItem, true))
+        }
+    })
+})
