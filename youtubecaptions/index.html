@@ -5,7 +5,7 @@ body {
     background: black;
     margin: 0;
 }
-#ytlink {
+#ytlinkwrapper {
     position: absolute;
     top: 50%;  /* position the top  edge of the element at the middle of the parent */
     left: 50%; /* position the left edge of the element at the middle of the parent */
@@ -34,7 +34,8 @@ body {
 </head>
 
 <body>
-<input id="ytlink"></input>
+<div id="ytlinkwrapper"><input id="ytlink"></input>
+<input type="button" id="ytlinkbtn" value="Play"></input></div>
 <div id="ytplayer"></div>
 <div id="ytpadding"></div>
 <div id="captions"></div>

@@ -131,9 +131,15 @@ window.onYouTubeIframeAPIReady = function() {
             // Cancel the default action, if needed
             event.preventDefault();
             if (playUrl(event.target.value)) {
-                input.classList.add('hidden')
+                input.parentElement.classList.add('hidden')
             }
             
+        }
+    });
+
+    document.querySelector('#ytlinkbtn').addEventListener("click", function(event) {
+        if (playUrl(input.value)) {
+            input.parentElement.classList.add('hidden')
         }
     });
 
@@ -153,6 +159,6 @@ window.onYouTubeIframeAPIReady = function() {
 
     if (window.location.search.startsWith('?url=')) {
         playUrl(window.location.search.slice(5))
-        input.classList.add('hidden')
+        input.parentElement.classList.add('hidden')
     }
 }
