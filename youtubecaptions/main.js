@@ -1,7 +1,7 @@
 var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 
 (function() {
-    var cors_api_host = 'cors-anywhere.herokuapp.com';
+    var cors_api_host = 'eerovil-cors-proxy.herokuapp.com';
     var cors_api_url = 'https://' + cors_api_host + '/';
     var slice = [].slice;
     var origin = window.location.protocol + '//' + window.location.host;

@@ -2,7 +2,7 @@
 var getSubtitles = require('youtube-captions-scraper').getSubtitles;
 
 (function() {
-    var cors_api_host = 'cors-anywhere.herokuapp.com';
+    var cors_api_host = 'eerovil-cors-proxy.herokuapp.com';
     var cors_api_url = 'https://' + cors_api_host + '/';
     var slice = [].slice;
     var origin = window.location.protocol + '//' + window.location.host;
@@ -126,6 +126,7 @@ window.addEventListener('scroll', function(e) {
         window.autoScroll = true
     }, 5000)
 });
+
 },{"youtube-captions-scraper":32}],2:[function(require,module,exports){
 module.exports = require('./lib/axios');
 },{"./lib/axios":4}],3:[function(require,module,exports){
