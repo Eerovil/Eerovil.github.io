@@ -101,31 +101,44 @@ window.loadVideo = function(id) {
     }, 100)
 }
 
-const input = document.querySelector('#ytlink')
-input.addEventListener("keyup", function(event) {
-    // Number 13 is the "Enter" key on the keyboard
-    if (event.keyCode === 13) {
-        // Cancel the default action, if needed
-        event.preventDefault();
-        console.log(event.target.value)
-        var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        var match = event.target.value.match(regExp);
-        if (match && match[2].length == 11) {
-            window.loadVideo(match[2]);
-            input.classList.add('hidden')
-        }
-        
+function playUrl(url) {
+    var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+    if (match && match[2].length == 11) {
+        window.loadVideo(match[2]);
+        return true;
     }
-});
+    return false;
+}
 
-window.autoScroll = true
-window.addEventListener('scroll', function(e) {
-    window.autoScroll = false;
-    window.clearTimeout(window.autoScrollTimeout)
-    window.autoScrollTimeout =  window.setTimeout(function() {
-        window.autoScroll = true
-    }, 5000)
-});
+window.onYouTubeIframeAPIReady = function() {
+    const input = document.querySelector('#ytlink')
+    input.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            if (playUrl(event.target.value)) {
+                input.classList.add('hidden')
+            }
+            
+        }
+    });
+
+    window.autoScroll = true
+    window.addEventListener('scroll', function(e) {
+        window.autoScroll = false;
+        window.clearTimeout(window.autoScrollTimeout)
+        window.autoScrollTimeout =  window.setTimeout(function() {
+            window.autoScroll = true
+        }, 5000)
+    });
+
+    if (window.location.search.startsWith('?url=')) {
+        playUrl(window.location.search.slice(5))
+        input.classList.add('hidden')
+    }
+}
 
 },{"youtube-captions-scraper":32}],2:[function(require,module,exports){
 module.exports = require('./lib/axios');
