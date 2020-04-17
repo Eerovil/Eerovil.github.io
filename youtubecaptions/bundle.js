@@ -26,14 +26,15 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 window.colorLoop = null
 window.captions = []
+window.ytpadding = document.querySelector('#ytpadding')
 
 window.loadVideo = function(id) {
     const container = document.querySelector('#captions')
     var player;
     container.innerHTML = 'Loading captions...'
     getSubtitles({
-    videoID: id, // youtube video id
-    lang: 'en' // default: `en`
+        videoID: id, // youtube video id
+        lang: 'en' // default: `en`
     }).then(function(captions) {
         container.innerHTML = ''
         window.captions = captions.map((caption, i) => {
@@ -67,10 +68,13 @@ window.loadVideo = function(id) {
         events: {
             'onReady': function() {
                 player.playVideo();
+                ytpadding.style.height = document.querySelector('#ytplayer').height + 'px';
+                window.scrollTo({top: -100})
             }
         }
     });
 
+    var currentCaption = null;
     window.clearInterval(window.colorLoop);
     window.colorLoop = window.setInterval(function() {
         if (!player) {
@@ -83,16 +87,20 @@ window.loadVideo = function(id) {
         if (!currTime || currTime == 0) {
             return
         }
-        const currentCaptions = window.captions.filter((caption) => {
+        const newCaption = window.captions.filter((caption) => {
             return (caption.start < currTime && (caption.start + caption.dur) > currTime)
-        }).map(caption => caption.id).slice(-1)
+        }).map(caption => caption.id).slice(-1)[0]
+        if (!newCaption || currentCaption == newCaption) {
+            return;
+        }
+        currentCaption = newCaption;
         document.querySelectorAll('#captions p').forEach((el) => {
-            if (currentCaptions.includes(el.getAttribute('captionid'))) {
+            if (currentCaption == el.getAttribute('captionid')) {
                 el.classList.add('active')
                 if (window.autoScroll) {
-                    el.scrollIntoView()
-                    window.scrollBy({top: -500})
-                    window.autoScroll = true
+                    ignoreNextScrollEvent = true;
+                    window.scrollTo({top: (el.offsetTop - window.ytpadding.offsetHeight - 30)})
+                    console.log("Scrolled to", el.offsetTop - window.ytpadding.offsetHeight - 30)
                 }
             } else {
                 el.classList.remove('active')
@@ -126,12 +134,17 @@ window.onYouTubeIframeAPIReady = function() {
     });
 
     window.autoScroll = true
+    var ignoreNextScrollEvent = false;
     window.addEventListener('scroll', function(e) {
+        if (ignoreNextScrollEvent) {
+            // Ignore this event because it was done programmatically
+            ignoreNextScrollEvent = false;
+            return;
+        }
         window.autoScroll = false;
-        window.clearTimeout(window.autoScrollTimeout)
-        window.autoScrollTimeout =  window.setTimeout(function() {
-            window.autoScroll = true
-        }, 5000)
+        if (this.scrollY == 0) {
+            window.autoScroll = true;
+        }
     });
 
     if (window.location.search.startsWith('?url=')) {
