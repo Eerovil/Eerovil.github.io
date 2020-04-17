@@ -68,8 +68,13 @@ window.loadVideo = function(id) {
         events: {
             'onReady': function() {
                 player.playVideo();
-                ytpadding.style.height = document.querySelector('#ytplayer').height + 'px';
-                window.scrollTo({top: -100})
+            },
+            'onStateChange': function(event) {
+                if (event.data == YT.PlayerState.PLAYING) {
+                    ytpadding.style.height = document.querySelector('#ytplayer').height + 'px';
+                    window.scrollTo({top: -100})
+                    autoScroll = true
+                }
             }
         }
     });
@@ -98,7 +103,7 @@ window.loadVideo = function(id) {
             if (currentCaption == el.getAttribute('captionid')) {
                 el.classList.add('active')
                 if (window.autoScroll) {
-                    ignoreNextScrollEvent = true;
+                    window.ignoreNextScrollEvent = true;
                     window.scrollTo({top: (el.offsetTop - window.ytpadding.offsetHeight - 30)})
                     console.log("Scrolled to", el.offsetTop - window.ytpadding.offsetHeight - 30)
                 }
@@ -134,15 +139,15 @@ window.onYouTubeIframeAPIReady = function() {
     });
 
     window.autoScroll = true
-    var ignoreNextScrollEvent = false;
+    window.ignoreNextScrollEvent = false;
     window.addEventListener('scroll', function(e) {
-        if (ignoreNextScrollEvent) {
+        if (window.ignoreNextScrollEvent) {
             // Ignore this event because it was done programmatically
-            ignoreNextScrollEvent = false;
+            window.ignoreNextScrollEvent = false;
             return;
         }
         window.autoScroll = false;
-        if (this.scrollY == 0) {
+        if (this.scrollY <= 0) {
             window.autoScroll = true;
         }
     });
