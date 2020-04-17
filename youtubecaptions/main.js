@@ -28,6 +28,7 @@ window.captions = []
 
 window.loadVideo = function(id) {
     const container = document.querySelector('#captions')
+    var player;
     container.innerHTML = 'Loading captions...'
     getSubtitles({
     videoID: id, // youtube video id
@@ -51,6 +52,9 @@ window.loadVideo = function(id) {
             el.setAttribute('dur', line.dur)
             container.append(el)
             i++;
+            el.addEventListener('click', function(e) {
+                player.seekTo(line.start)
+            });
         }
     }).catch((err) => {
         container.innerHTML = err
