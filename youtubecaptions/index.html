@@ -6,6 +6,7 @@ body {
     margin: 0;
 }
 #ytlinkwrapper {
+    color: white;
     position: absolute;
     top: 50%;  /* position the top  edge of the element at the middle of the parent */
     left: 50%; /* position the left edge of the element at the middle of the parent */
@@ -34,8 +35,13 @@ body {
 </head>
 
 <body>
-<div id="ytlinkwrapper"><input id="ytlink"></input>
-<input type="button" id="ytlinkbtn" value="Play"></input></div>
+<div id="ytlinkwrapper">
+<h1>Youtube Captions Reader</h1>
+<input id="ytlink"></input>
+<input type="button" id="ytlinkbtn" value="Play"></input>
+<p>Input a valid youtube url. You can also pass one using the url parameter ?url=.
+<p>The CORS proxy to fetch captions is currently rate limited to 50 requests per 3 minutes.
+</div>
 <div id="ytplayer"></div>
 <div id="ytpadding"></div>
 <div id="captions"></div>
