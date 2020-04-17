@@ -65,6 +65,9 @@ window.loadVideo = function(id) {
         width: window.innerWidth,
         height: Math.min(window.innerWidth * 9.0 / 16.0, window.innerHeight / 2),
         videoId: id,
+        playerVars: {
+            'playsinline': '1',
+        },
         events: {
             'onReady': function() {
                 player.playVideo();
