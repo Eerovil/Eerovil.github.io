@@ -63,6 +63,7 @@ window.loadVideo = function(id) {
 
     player = new YT.Player('ytplayer', {
         width: window.innerWidth,
+        height: (window.innerWidth * 9.0 / 16.0),
         videoId: id,
         events: {
             'onReady': function() {
