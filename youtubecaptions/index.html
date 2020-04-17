@@ -1,0 +1,41 @@
+<head>
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<style>
+body {
+    background: black;
+    margin: 0;
+}
+#ytlink {
+    position: absolute;
+    top: 50%;  /* position the top  edge of the element at the middle of the parent */
+    left: 50%; /* position the left edge of the element at the middle of the parent */
+
+    transform: translate(-50%, -50%); /* This is a shorthand of
+                                         translateX(-50%) and translateY(-50%) */
+}
+#ytplayer {
+    position: fixed;
+}
+#captions {
+    color: white;
+    padding-top: 500px;
+    margin: 1em;
+}
+#captions p {
+    margin: 0.5em
+}
+#captions p.active {
+    color: green;
+}
+.hidden {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<input id="ytlink"></input>
+<div id="ytplayer"></div>
+<div id="captions"></div>
+<script type="text/javascript" src="bundle.js?ver=2"></script>
+</body>
