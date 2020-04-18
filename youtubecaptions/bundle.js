@@ -49,9 +49,7 @@ window.loadVideo = function(id) {
         for (const line of captions) {
             let el = document.createElement('p')
             el.innerHTML = line.text
-            el.setAttribute('captionid', i)
-            el.setAttribute('start', line.start)
-            el.setAttribute('dur', line.dur)
+            el.dataset.captionid = i
             container.append(el)
             i++;
             el.addEventListener('click', function(e) {
@@ -86,36 +84,52 @@ window.loadVideo = function(id) {
     var currentCaption = null;
     window.clearInterval(window.colorLoop);
     window.colorLoop = window.setInterval(function() {
-        if (!player) {
-            return;
-        }
-        if (player.getPlayerState() != 1) {
+        if (!player || !player.getPlayerState || player.getPlayerState() != 1) {
             return;
         }
         const currTime = player.getCurrentTime()
         if (!currTime || currTime == 0) {
             return
         }
-        const newCaption = window.captions.filter((caption) => {
-            return (caption.start < currTime && (caption.start + caption.dur) > currTime)
-        }).map(caption => caption.id).slice(-1)[0]
-        if (!newCaption || currentCaption == newCaption) {
+        let newCaption = binarySearch(window.captions, currTime, (time, caption) => {
+            if (caption.start > time) { return -1; }
+            if ((caption.start + caption.dur) > time) { return 0; }
+            return 1;
+        })
+        // Since two captions will often match, check the next index for an even better match.
+        const nextCaption = window.captions[newCaption + 1];
+        if (nextCaption && nextCaption.start < currTime && (nextCaption.start + nextCaption.dur) > currTime) {
+            newCaption = newCaption + 1;
+        }
+        if (!newCaption || newCaption < 0 || currentCaption == newCaption) {
             return;
         }
+        document.querySelector('#captionStyle').innerHTML = 'p[data-captionid="' + newCaption + '"] {color: chartreuse;}' 
+        if (window.autoScroll) {
+            el = document.querySelector('p[data-captionid="' + newCaption + '"]')
+            window.ignoreNextScrollEvent = true;
+            window.scrollTo({top: (el.offsetTop - window.ytpadding.offsetHeight - 30)})
+            console.log("Scrolled to", el.offsetTop - window.ytpadding.offsetHeight - 30)
+        }
         currentCaption = newCaption;
-        document.querySelectorAll('#captions p').forEach((el) => {
-            if (currentCaption == el.getAttribute('captionid')) {
-                el.classList.add('active')
-                if (window.autoScroll) {
-                    window.ignoreNextScrollEvent = true;
-                    window.scrollTo({top: (el.offsetTop - window.ytpadding.offsetHeight - 30)})
-                    console.log("Scrolled to", el.offsetTop - window.ytpadding.offsetHeight - 30)
-                }
-            } else {
-                el.classList.remove('active')
-            }
-        })
     }, 100)
+}
+
+function binarySearch(ar, el, compare_fn) {
+    var m = 0;
+    var n = ar.length - 1;
+    while (m <= n) {
+        var k = (n + m) >> 1;
+        var cmp = compare_fn(el, ar[k]);
+        if (cmp > 0) {
+            m = k + 1;
+        } else if(cmp < 0) {
+            n = k - 1;
+        } else {
+            return k;
+        }
+    }
+    return -m - 1;
 }
 
 function playUrl(url) {
