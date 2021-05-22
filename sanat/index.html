@@ -39,22 +39,32 @@
     const audioel = document.querySelector('#audio')
     let canPlay = true;
     function say(m) {
+        if (m.trim().length == 0) {
+            return;
+        }
+        el.style.color = "lawngreen";
         const url = `http://api.voicerss.org/?key=${token}&hl=fi-fi&src=${m}`;
         audioel.setAttribute('src', url);
         audioel.play();
+        audioel.onended = function() {
+           el.style.color = "black";
+        };
     }
 
 
    let text = "";
-   window.addEventListener('keyup', (event) => {
-       console.log("event: ", event)
-       if (event.code.startsWith('Key') || [" "].includes(event.key)) {
-           text += event.key;
-       }
-       else if (event.code == 'Backspace') {
+   window.addEventListener('keydown', (event) => {
+       if (event.code == 'Backspace') {
            if (text.length > 0) {
             text = text.slice(0, -1); 
            }
+       }
+       el.innerHTML = text;
+   })
+   window.addEventListener('keyup', (event) => {
+       console.log("event: ", event)
+       if (event.code.startsWith('Key') || event.code.startsWith('Digit') || [" ", 'ä', 'ö', 'å'].includes(event.key.toLowerCase())) {
+           text += event.key;
        }
        else if (event.code == 'Enter') {
            if (canPlay) {
