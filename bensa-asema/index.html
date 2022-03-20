@@ -205,12 +205,12 @@
                     console.log("DONE!")
                 },
                 increaseProgress() {
+                    if (this.progress.toFixed(9).endsWith('000000000')) {
+                        speak((this.progress + 1).toFixed(0))
+                    }
                     this.progress += 0.1;
                     beep(100 + (this.progress * 50), 10, 5);
                     console.log(this.progress)
-                    if (this.progress > 0 && this.progress.toFixed(9).endsWith('000000000')) {
-                        speak(this.progress.toFixed(0))
-                    }
                     if (this.progress >= 10) {
                         this.progress = null;
                         this.finishAction();
