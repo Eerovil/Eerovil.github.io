@@ -123,6 +123,7 @@
             oscillator.stop(context.currentTime + duration * 0.001);
         }
         const speak = (text) => {
+            console.log("SPEAKING:", text);
             const utter = new SpeechSynthesisUtterance();
             utter.lang = 'fi-FI';
             utter.text = text;
@@ -206,6 +207,10 @@
                 increaseProgress() {
                     this.progress += 0.1;
                     beep(100 + (this.progress * 50), 10, 5);
+                    console.log(this.progress)
+                    if (this.progress > 0 && this.progress.toFixed(9).endsWith('000000000')) {
+                        speak(this.progress.toFixed(0))
+                    }
                     if (this.progress >= 10) {
                         this.progress = null;
                         this.finishAction();
