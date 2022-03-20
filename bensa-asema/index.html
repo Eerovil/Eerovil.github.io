@@ -20,6 +20,10 @@
             height: 50%;
             justify-content: space-between;
         }
+        .upper-buttons {
+            overflow-y: hidden;
+            overflow-x: scroll;
+        }
 
         .lower-buttons {
             justify-content: flex-end;
@@ -31,11 +35,12 @@
             justify-content: center;
             flex-direction: column;
             align-items: center;
-            width: 30%;
-            height: 100%;
+            min-width: 25%;
+            height: 90%;
             border: 1px solid black;
             border-radius: 10%;
             padding: 0.5rem;
+            margin-right: 0.5rem;
 
             text-transform: uppercase;
             font-size: 1.5rem;
@@ -138,10 +143,16 @@
                     { slug: 'bensa', image: 'bensa.svg' },
                     { slug: 'renkaat', image: 'renkaat.svg' },
                     { slug: 'pesu', image: 'pesu.svg' },
+                    { slug: 'moottori', image: 'moottori.svg' },
+                    { slug: 'turbo', image: 'turbo.svg' },
+                    { slug: 'kahvi', image: 'kahvi.svg' },
                 ]
             }),
             methods: {
                 selectChoice(newChoice) {
+                    if (this.progress !== null) {
+                        return;
+                    }
                     this.choice = newChoice;
                     speak(`${newChoice}`);
                 },
@@ -158,6 +169,15 @@
                     if (this.choice == 'pesu') {
                         speak('pestään autoa')
                     }
+                    if (this.choice == 'moottori') {
+                        speak('korjataan moottoria')
+                    }
+                    if (this.choice == 'turbo') {
+                        speak('ladataan turboa')
+                    }
+                    if (this.choice == 'kahvi') {
+                        speak('juodaan kahvia')
+                    }
                     console.log("STARTING!", this.choice)
                     this.progress = 0
                     this.increaseProgress()
@@ -171,6 +191,15 @@
                     }
                     if (this.choice == 'pesu') {
                         speak('auto on puhdas!')
+                    }
+                    if (this.choice == 'moottori') {
+                        speak('moottori korjattu!')
+                    }
+                    if (this.choice == 'turbo') {
+                        speak('turbo! Kovaa ajoa!')
+                    }
+                    if (this.choice == 'kahvi') {
+                        speak('kahvi juotu!')
                     }
                     console.log("DONE!")
                 },
