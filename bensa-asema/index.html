@@ -181,7 +181,7 @@
                     }
                     console.log("STARTING!", this.choice)
                     this.progress = 0
-                    this.increaseProgress()
+                    setTimeout(this.increaseProgress, 1000)
                 },
                 finishAction() {
                     if (this.choice == 'bensa') {
