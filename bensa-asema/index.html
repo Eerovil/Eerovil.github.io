@@ -1,0 +1,192 @@
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        #app-wrapper {
+            width: 100%;
+            height: 95%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .upper-buttons,
+        .lower-buttons {
+            display: flex;
+            height: 50%;
+            justify-content: space-between;
+        }
+
+        .lower-buttons {
+            justify-content: flex-end;
+            height: 30%;
+        }
+
+        .btn {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            width: 30%;
+            height: 100%;
+            border: 1px solid black;
+            border-radius: 10%;
+            padding: 0.5rem;
+
+            text-transform: uppercase;
+            font-size: 1.5rem;
+
+        }
+
+        .btn-img {
+            width: 100%;
+            height: 100%;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .btn.selected {
+            background-color: rgb(175, 255, 138);
+        }
+
+        .btn span {
+            background-color: white;
+            border: 1px solid black;
+        }
+
+        .loading-bar {
+            height: 5rem;
+            width: 95%;
+            border: 1px solid black;
+        }
+
+        .bar {
+            height: 100%;
+            background-color: rgb(88, 255, 88);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="vue-app">
+    </div>
+    <script type="template/html" id="template">
+        <div id="app-wrapper">
+            <div class="upper-buttons">
+                <div
+                    v-for="option in options"
+                    :key="option.slug" class="btn"
+                    @click="selectChoice(option.slug)"
+                    :class="{selected: choice == option.slug}"
+                ><div
+                  class="btn-img"
+                  :style="{backgroundImage: `url(${option.image})`}"
+                ></div><span>{{ option.slug }}</span></div>
+            </div>
+            <div v-if="progress === null" class="lower-buttons">
+                <div
+                    v-if="choice !== null"
+                    class="btn"
+                    @click="startAction()"
+                ><div
+                  class="btn-img"
+                  :style="{backgroundImage: `url('ok.svg')`}"
+                ></div><span>OK</span></div>
+            </div>
+            <div v-else class="loading-bar">
+                <div class="bar" :style="{width: (progress * 10) + '%'}"></div>
+            </div>
+        </div>
+    </script>
+    <script>
+        context = new AudioContext();
+        const beep = (freq = 320, duration = 10, vol = 1) => {
+            const oscillator = context.createOscillator();
+            const gain = context.createGain();
+            oscillator.connect(gain);
+            oscillator.frequency.value = freq;
+            oscillator.type = "square";
+            gain.connect(context.destination);
+            gain.gain.value = vol * 0.01;
+            oscillator.start(context.currentTime);
+            oscillator.stop(context.currentTime + duration * 0.001);
+        }
+        const speak = (text) => {
+            const utter = new SpeechSynthesisUtterance();
+            utter.lang = 'fi-FI';
+            utter.text = text;
+            utter.rate = 1;
+            utter.pitch = 0.8;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utter);
+        }
+    </script>
+    <script>
+        var app = new Vue({
+            el: '#vue-app',
+            template: "#template",
+            data: () => ({
+                choice: null,
+                progress: null,
+                options: [
+                    { slug: 'bensa', image: 'bensa.svg' },
+                    { slug: 'renkaat', image: 'renkaat.svg' },
+                    { slug: 'pesu', image: 'pesu.svg' },
+                ]
+            }),
+            methods: {
+                selectChoice(newChoice) {
+                    this.choice = newChoice;
+                    speak(`${newChoice}`);
+                },
+                startAction() {
+                    if (this.choice === null) {
+                        return;
+                    }
+                    if (this.choice == 'bensa') {
+                        speak('tankataan bensaa')
+                    }
+                    if (this.choice == 'renkaat') {
+                        speak('vahdetaan renkaita')
+                    }
+                    if (this.choice == 'pesu') {
+                        speak('pestään autoa')
+                    }
+                    console.log("STARTING!", this.choice)
+                    this.progress = 0
+                    this.increaseProgress()
+                },
+                finishAction() {
+                    if (this.choice == 'bensa') {
+                        speak('tankki täynnä!')
+                    }
+                    if (this.choice == 'renkaat') {
+                        speak('renkaat vaihdettu!')
+                    }
+                    if (this.choice == 'pesu') {
+                        speak('auto on puhdas!')
+                    }
+                    console.log("DONE!")
+                },
+                increaseProgress() {
+                    this.progress += 0.1;
+                    beep(100 + (this.progress * 50), 10, 5);
+                    if (this.progress >= 10) {
+                        this.progress = null;
+                        this.finishAction();
+                        return;
+                    }
+                    setTimeout(() => {
+                        this.increaseProgress();
+                    }, 100);
+                }
+            }
+        })
+    </script>
+</body>
