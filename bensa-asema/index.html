@@ -262,6 +262,7 @@
                             this.message = message;
                             this.messageOK = false;
                             let text = "Hälytys hälytys! " + message.message + ". " + message.message + ". Hoidatteko homman?";
+                            text += " Toistan: " + message.message + ". " + message.message + ". Hoidatteko homman?";
                             beep(400, 500, 20);
                             sleep(1000).then(() => {
                                 beep(400, 500, 20);
