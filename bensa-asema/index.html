@@ -166,6 +166,7 @@
                 progress: null,
                 options: [
                     { slug: 'bensa', image: 'bensa.svg' },
+                    { slug: 'korjaus', image: 'korjaus.svg' },
                     { slug: 'renkaat', image: 'renkaat.svg' },
                     { slug: 'pesu', image: 'pesu.svg' },
                     { slug: 'moottori', image: 'moottori.svg' },
@@ -194,6 +195,9 @@
                     if (this.choice == 'bensa') {
                         speak('tankataan bensaa')
                     }
+                    if (this.choice == 'korjaus') {
+                        speak('korjataan autoa')
+                    }
                     if (this.choice == 'renkaat') {
                         speak('vaihdetaan renkaita')
                     }
@@ -216,6 +220,9 @@
                 finishAction() {
                     if (this.choice == 'bensa') {
                         speak('tankki täynnä!')
+                    }
+                    if (this.choice == 'korjaus') {
+                        speak('auto korjattu!')
                     }
                     if (this.choice == 'renkaat') {
                         speak('renkaat vaihdettu!')
