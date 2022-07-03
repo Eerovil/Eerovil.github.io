@@ -179,6 +179,7 @@
             }),
             mounted() {
                 setTimeout(this.getMessage, 2000)
+                setTimeout(this.pingLenovo, 2000)
             },
             methods: {
                 selectChoice(newChoice) {
@@ -239,6 +240,7 @@
                     if (this.choice == 'kahvi') {
                         speak('kahvi juotu!')
                     }
+                    axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-action?choice=' + this.choice)
                     console.log("DONE!")
                 },
                 increaseProgress() {
@@ -279,6 +281,12 @@
                     }).finally(() => {
                         setTimeout(this.getMessage, 15000);
                     })
+                },
+                pingLenovo() {
+                    axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-heartbeat')
+                        .finally(() => {
+                            setTimeout(this.pingLenovo, 15000);
+                        })
                 },
                 messageAck() {
                     this.messageOK = true;
