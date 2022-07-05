@@ -283,10 +283,12 @@
                     })
                 },
                 pingLenovo() {
-                    axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-heartbeat')
-                        .finally(() => {
-                            setTimeout(this.pingLenovo, 15000);
-                        })
+                    axios.post('https://eeron-lenovo.duckdns.org:5000/bensa-asema-heartbeat', {
+                        choices: this.options,
+                    })
+                    .finally(() => {
+                        setTimeout(this.pingLenovo, 15000);
+                    })
                 },
                 messageAck() {
                     this.messageOK = true;
