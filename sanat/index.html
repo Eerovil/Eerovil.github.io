@@ -13,6 +13,7 @@
       }
       body {
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
       }
@@ -20,7 +21,35 @@
         text-align: center;
         text-transform: uppercase;
         font-size: 4rem;
-        font-family: monospace;
+        font-family: ui-monospace;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+      }
+      #button-wrapper {
+        height: 30vh;
+        width: 100%;
+        background-color: aqua;
+        display: flex;
+      }
+      #buttons {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      #buttons .row {
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        flex-grow: 1;
+      }
+      .side-row {
+        width: 10%;
+        display: flex;
+        flex-direction: column;
+      }
+      .row button {
+        flex-grow: 1;
       }
       #audio {
           display: none;
@@ -28,31 +57,48 @@
       </style>
    </head>
     <body>
-    <div id="text"></div>
-    <audio id="audio" controls>
-    </audio>
+        <div id="text"></div>
+        <div id="button-wrapper">
+            <div id="buttons">
+                <div class="row row1"></div>
+                <div class="row row2"></div>
+                <div class="row row3"></div>
+                <div class="row row4"></div>
+            </div>
+            <div class="row side-row">
+                <button onclick="backspace()">^^</button>
+                <button onclick="say(text)">ENTER</button>
+            </div>
+       </div>
    </body>
    <script>
 
-    const token = "8b4fabd6e96c4e6d928031e5ea854352";
     const el = document.querySelector('#text');
-    const audioel = document.querySelector('#audio')
-    let canPlay = true;
+    const speak = (text) => {
+        console.log(text);
+        const utter = new SpeechSynthesisUtterance();
+        utter.lang = 'fi-FI';
+        utter.text = text;
+        utter.rate = 1.2;
+        utter.pitch = 0.8;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter);
+    }
+    if (window.speechSynthesis) {
+        speechSynthesis.getVoices();
+    }
+
     function say(m) {
         if (m.trim().length == 0) {
             return;
         }
-        el.style.color = "lawngreen";
-        const url = `http://api.voicerss.org/?key=${token}&hl=fi-fi&src=${m}`;
-        audioel.setAttribute('src', url);
-        audioel.play();
-        audioel.onended = function() {
-           el.style.color = "black";
-        };
+        speak(m)
     }
-
-
    let text = "";
+   backspace = function() {
+    text = text.slice(0, -1)
+       el.innerHTML = text;
+   }
    window.addEventListener('keydown', (event) => {
        if (event.code == 'Backspace') {
            if (text.length > 0) {
@@ -67,14 +113,52 @@
            text += event.key;
        }
        else if (event.code == 'Enter') {
-           if (canPlay) {
             say(text)
-            canPlay = false;
-            setTimeout(() => {canPlay = true}, 2000)
-           }
        }
        el.innerHTML = text;
    })
+
+   row1 = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "å"];
+   row2 = ["a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä"];
+    row3 = ["z", "x", "c", "v", "b", "n", "m"];
+    row4 = [" "];
+
+   for (let i = 0; i < row1.length; i++) {
+       const button = document.createElement('button');
+       button.innerHTML = row1[i].toUpperCase();
+       button.addEventListener('click', () => {
+           text += row1[i];
+           el.innerHTML = text.toUpperCase();
+       })
+       document.querySelector('#buttons .row1').appendChild(button);
+   }
+    for (let i = 0; i < row2.length; i++) {
+         const button = document.createElement('button');
+         button.innerHTML = row2[i].toUpperCase();
+         button.addEventListener('click', () => {
+              text += row2[i];
+              el.innerHTML = text.toUpperCase();
+         })
+         document.querySelector('#buttons .row2').appendChild(button);
+    }
+    for (let i = 0; i < row3.length; i++) {
+         const button = document.createElement('button');
+         button.innerHTML = row3[i].toUpperCase();
+         button.addEventListener('click', () => {
+              text += row3[i];
+              el.innerHTML = text.toUpperCase();
+         })
+         document.querySelector('#buttons .row3').appendChild(button);
+    }
+    for (let i = 0; i < row4.length; i++) {
+         const button = document.createElement('button');
+         button.innerHTML = row4[i].toUpperCase();
+         button.addEventListener('click', () => {
+              text += row4[i];
+              el.innerHTML = text.toUpperCase();
+         })
+         document.querySelector('#buttons .row4').appendChild(button);
+    }
 
    </script>
 </html>
