@@ -13,6 +13,7 @@
           width: 100%;
             margin: 0;
             padding: 0;
+        font-family: ui-monospace;
       }
       body {
           display: flex;
@@ -20,11 +21,27 @@
           align-items: center;
           justify-content: center;
       }
+      #challenge {
+        height: 10vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-transform: uppercase;
+        font-size: 3rem;
+      }
+      #challenge.correct {
+        color: green;
+        font-weight: bold;
+      }
+      #challenge.hearing {
+        color: aqua;
+        background-color: aqua;
+      }
       #text {
         text-align: center;
         text-transform: uppercase;
         font-size: 4rem;
-        font-family: ui-monospace;
         flex-grow: 1;
         display: flex;
         align-items: center;
@@ -61,6 +78,7 @@
       </style>
    </head>
     <body>
+        <div id="challenge" onclick="speakChallenge()"></div>
         <div id="text"></div>
         <div id="button-wrapper">
             <div id="buttons">
@@ -97,6 +115,7 @@
             return;
         }
         speak(m)
+        checkChallenge(m);
     }
    let text = "";
    backspace = function() {
@@ -130,7 +149,7 @@
    for (let i = 0; i < row1.length; i++) {
        const button = document.createElement('button');
        button.innerHTML = row1[i].toUpperCase();
-       button.addEventListener('click', () => {
+       button.addEventListener('mouseup', () => {
            text += row1[i];
            el.innerHTML = text.toUpperCase();
            say(text)
@@ -140,7 +159,7 @@
     for (let i = 0; i < row2.length; i++) {
          const button = document.createElement('button');
          button.innerHTML = row2[i].toUpperCase();
-         button.addEventListener('click', () => {
+         button.addEventListener('mouseup', () => {
               text += row2[i];
               el.innerHTML = text.toUpperCase();
               say(text)
@@ -150,7 +169,7 @@
     for (let i = 0; i < row3.length; i++) {
          const button = document.createElement('button');
          button.innerHTML = row3[i].toUpperCase();
-         button.addEventListener('click', () => {
+         button.addEventListener('mouseup', () => {
               text += row3[i];
               el.innerHTML = text.toUpperCase();
               say(text)
@@ -160,13 +179,64 @@
     for (let i = 0; i < row4.length; i++) {
          const button = document.createElement('button');
          button.innerHTML = row4[i].toUpperCase();
-         button.addEventListener('click', () => {
+         button.addEventListener('mouseup', () => {
               text += row4[i];
               el.innerHTML = text.toUpperCase();
               say(text)
          })
          document.querySelector('#buttons .row4').appendChild(button);
     }
+
+    currentLevel = 0;
+    currentStage = 0;
+    hearingMode = false;
+    levels = [
+        [
+            "isi",
+            "ai",
+            "ei",
+            "ukki",
+            "r"
+        ]
+    ]
+    const advanceLevel = () => {
+        if (!hearingMode) {
+            hearingMode = true;
+            currentStage = 0;
+        }
+        else {
+            hearingMode = false;
+            currentLevel++;
+            currentStage = 0;
+        }
+    }
+    const challengeEl = document.querySelector('#challenge');
+    const advanceStage = () => {
+        currentStage++;
+        if (currentStage >= levels[currentLevel].length) {
+            advanceLevel()
+        }
+        if (hearingMode) {
+            challengeEl.classList.add('hearing');
+            speakChallenge()
+        } else {
+            challengeEl.classList.remove('hearing');
+        }
+        challengeEl.innerHTML = levels[currentLevel][currentStage];
+    }
+    const speakChallenge = () => {
+        speak(levels[currentLevel][currentStage]);
+    }
+    const checkChallenge = (text) => {
+        if (text == levels[currentLevel][currentStage]) {
+            challengeEl.classList.add('correct');
+            setTimeout(() => {
+                advanceStage();
+                challengeEl.classList.remove('correct');
+            }, 1000)
+        }
+    }
+    challengeEl.innerHTML = levels[currentLevel][currentStage];
 
    </script>
 </html>
