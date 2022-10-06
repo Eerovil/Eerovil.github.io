@@ -28,9 +28,10 @@
         flex-grow: 1;
         display: flex;
         align-items: center;
+        word-break: break-word;
       }
       #button-wrapper {
-        height: 30vh;
+        height: 35vh;
         width: 100%;
         background-color: aqua;
         display: flex;
@@ -132,6 +133,7 @@
        button.addEventListener('click', () => {
            text += row1[i];
            el.innerHTML = text.toUpperCase();
+           say(text)
        })
        document.querySelector('#buttons .row1').appendChild(button);
    }
@@ -141,6 +143,7 @@
          button.addEventListener('click', () => {
               text += row2[i];
               el.innerHTML = text.toUpperCase();
+              say(text)
          })
          document.querySelector('#buttons .row2').appendChild(button);
     }
@@ -150,6 +153,7 @@
          button.addEventListener('click', () => {
               text += row3[i];
               el.innerHTML = text.toUpperCase();
+              say(text)
          })
          document.querySelector('#buttons .row3').appendChild(button);
     }
@@ -159,6 +163,7 @@
          button.addEventListener('click', () => {
               text += row4[i];
               el.innerHTML = text.toUpperCase();
+              say(text)
          })
          document.querySelector('#buttons .row4').appendChild(button);
     }
