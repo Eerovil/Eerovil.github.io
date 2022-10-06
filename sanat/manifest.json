@@ -1,0 +1,15 @@
+{
+    "name": "Sanat for Kids",
+    "short_name": "SanatApp",
+    "display": "fullscreen",
+    "start_url": "/sanat/",
+    "theme_color": "#673ab6",
+    "background_color": "#111111",
+    "icons": [
+      {
+        "src": "icon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ]
+  }
