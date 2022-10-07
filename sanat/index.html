@@ -27,6 +27,19 @@
             justify-content: center;
         }
 
+        #reverse {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+
+        }
+        #currentlevel {
+            position: fixed;
+            top: 3rem;
+            left: 1rem;
+            font-size: 2rem;
+        }
+
         #challenge {
             height: 10vh;
             width: 100%;
@@ -95,6 +108,8 @@
 </head>
 
 <body>
+    <button id="reverse" onclick="reverseStage()"><--</button>
+    <div id="currentlevel"></div>
     <div id="challenge" onclick="speakChallenge()"></div>
     <div id="text"></div>
     <div id="button-wrapper">
@@ -259,6 +274,7 @@
         }
     }
     const challengeEl = document.querySelector('#challenge');
+    const currentLevelEl = document.querySelector('#currentlevel');
     const advanceStage = () => {
         currentStage++;
         if (currentStage >= levels[currentLevel].length) {
@@ -271,6 +287,35 @@
         }
         speakChallenge()
         challengeEl.innerHTML = levels[currentLevel][currentStage];
+        currentLevelEl.innerHTML = `${currentLevel + 1}-${currentStage + 1}`;
+    }
+    const reverseLevel = () => {
+        if (hearingMode) {
+            hearingMode = false;
+            currentStage = levels[currentLevel].length - 1;
+        }
+        else {
+            hearingMode = true;
+            currentLevel--;
+            currentStage = levels[currentLevel].length - 1;
+        }
+    }
+    const reverseStage = () => {
+        if (currentStage == 0 && currentLevel == 0 && !hearingMode) {
+            return;
+        }
+        currentStage--;
+        if (currentStage < 0) {
+            reverseLevel()
+        }
+        if (hearingMode) {
+            challengeEl.classList.add('hearing');
+        } else {
+            challengeEl.classList.remove('hearing');
+        }
+        speakChallenge()
+        challengeEl.innerHTML = levels[currentLevel][currentStage];
+        currentLevelEl.innerHTML = `${currentLevel + 1}-${currentStage + 1}`;
     }
     const speakChallenge = () => {
         speak(levels[currentLevel][currentStage]);
@@ -288,6 +333,7 @@
         return false;
     }
     challengeEl.innerHTML = levels[currentLevel][currentStage];
+    currentLevelEl.innerHTML = `${currentLevel + 1}-${currentStage + 1}`;
 
 </script>
 
