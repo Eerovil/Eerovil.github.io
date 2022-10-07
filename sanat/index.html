@@ -114,10 +114,12 @@
 
     const el = document.querySelector('#text');
     const speak = (text) => {
-        console.log(text);
+        let myText = (text || '').toLowerCase()
+        myText = myText.replace(/nn$/g, 'n');
+        myText = myText.replace(/mm$/g, 'm');
         const utter = new SpeechSynthesisUtterance();
         utter.lang = 'fi-FI';
-        utter.text = text;
+        utter.text = myText;
         utter.rate = 1.2;
         utter.pitch = 0.8;
         speechSynthesis.cancel();
@@ -230,6 +232,13 @@
             "patu",
         ],
         [
+            "vaa",
+            "ri",
+            "au",
+            "to",
+            "jo"
+        ],
+        [
             "vaari",
             "eero",
             "auto",
@@ -256,10 +265,10 @@
         }
         if (hearingMode) {
             challengeEl.classList.add('hearing');
-            speakChallenge()
         } else {
             challengeEl.classList.remove('hearing');
         }
+        speakChallenge()
         challengeEl.innerHTML = levels[currentLevel][currentStage];
     }
     const speakChallenge = () => {
@@ -268,10 +277,11 @@
     const checkChallenge = (text) => {
         if (text == levels[currentLevel][currentStage]) {
             challengeEl.classList.add('correct');
+            speak("Hyvä! Kirjoitit " + text);
             setTimeout(() => {
                 advanceStage();
                 challengeEl.classList.remove('correct');
-            }, 1000)
+            }, 3000)
         }
     }
     challengeEl.innerHTML = levels[currentLevel][currentStage];
