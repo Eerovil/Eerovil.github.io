@@ -321,6 +321,9 @@
         speak(levels[currentLevel][currentStage]);
     }
     const checkChallenge = (text) => {
+        if (challengeEl.classList.contains('correct')) {
+            return true;
+        }
         if (text == levels[currentLevel][currentStage]) {
             challengeEl.classList.add('correct');
             speak("Hyvä! Kirjoitit " + text);
