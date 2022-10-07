@@ -133,8 +133,9 @@
         if (m.trim().length == 0) {
             return;
         }
-        speak(m)
-        checkChallenge(m);
+        if (!checkChallenge(m)) {
+            speak(m)
+        }
     }
     let text = "";
     backspace = function () {
@@ -282,7 +283,9 @@
                 advanceStage();
                 challengeEl.classList.remove('correct');
             }, 3000)
+            return true;
         }
+        return false;
     }
     challengeEl.innerHTML = levels[currentLevel][currentStage];
 
