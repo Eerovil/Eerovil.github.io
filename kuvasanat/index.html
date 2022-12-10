@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
         integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
         crossorigin="anonymous"></script>
+    <script type="text/javascript" src="finnishhyphenator.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="manifest" href="manifest.json">
 
@@ -39,11 +40,23 @@
         }
         #images {
             height: 100%;
+            width: 70%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
         }
+        .image {
+            height: 30%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
         #success {
             position: fixed;
             top: 0;
@@ -74,15 +87,17 @@
             <div v-else style="color: red;" >VÄÄ-RIN!</div>
         </div>
         <div id="top-part">
-            <progress style="width: 80vw;" :value="currentIndex" :max="words.length"></progress>
+            <progress v-if="currentIndex >= 0 && (currentIndex < words.length)" style="width: 80vw;" :value="currentIndex" :max="words.length"></progress>
+            <div v-else @click="loadNextWord">VOI-TIT PE-LIN!!</div>
             <div id="word">
                 <div id="word-text">{{ text }}</div>
             </div>
         </div>
         <div id="bottom-part">
             <div id="images">
-                <div v-for="image in images" class="image" @click="imageClick(image)">
-                    <img :src="image.src" />
+                <div v-for="image in images" :key="image.src" class="image" @click="imageClick(image)" :style="{
+                    'background-image': 'url(' + image.src + ')'
+                }">
                 </div>
             </div>
         </div>
@@ -121,10 +136,19 @@
 
             const result = {
                 q: query.replace(/\s/g, '+'),
-                excludeTerms: 'gun sex violence death angry anger food',
+                // excludeTerms: 'gun sex violence death angry anger food ase pyssy pistooli seksi alaston',
                 searchType: 'image',
                 cx: this.id,
                 key: this.apiKey,
+                rsz: "filtered_cse",
+                num: 2,
+                hl: "fi",
+                safe: "active",
+                cr: "countryFI",
+                lr: "fi",
+                gl: "fi",
+                oq: query.replace(/\s/g, '+'),
+                excludeTerms: "alkoholi alko kuollut kaadettu",
             };
 
             if (options.page) {
@@ -158,169 +182,27 @@
         el: '#vue-app',
         template: "#template",
         data: () => ({
-            text: null,
             word: null,
-            images: [],
+            images: [{},{},{}],
             words: [
-                {
-                    word: 'a dog',
-                    text: 'KOI-RA',
-                },
-                {
-                    word: 'a cat',
-                    text: 'KIS-SA',
-                },
-                {
-                    word: 'a small house',
-                    text: 'TA-LO',
-                },
-                {
-                    word: 'a car',
-                    text: 'AU-TO',
-                },
-                {
-                    word: 'a tree',
-                    text: 'PUU',
-                },
-                {
-                    word: 'a bicycle',
-                    text: 'PYÖ-RÄ',
-                },
-                {
-                    word: 'a clock',
-                    text: 'KEL-LO',
-                },
-                {
-                    word: 'a flower',
-                    text: 'KUK-KA',
-                },
-                {
-                    word: 'a bird',
-                    text: 'LIN-TU',
-                },
-                {
-                    word: 'a fish',
-                    text: 'KA-LA',
-                },
-                {
-                    word: 'a small boat',
-                    text: 'VE-NE',
-                },
-                {
-                    word: 'a train',
-                    text: 'JU-NA',
-                },
-                {
-                    word: 'an airplane',
-                    text: 'LEN-TO-KO-NE',
-                },
-                {
-                    word: 'a bus',
-                    text: 'BUS-SI',
-                },
-                {
-                    word: 'a space rocket',
-                    text: 'RA-KET-TI',
-                },
-                {
-                    word: 'a television',
-                    text: 'TE-LE-VI-SI-O',
-                },
-                {
-                    word: 'shoes',
-                    text: 'KEN-GÄT',
-                },
-                {
-                    word: 'a couch',
-                    text: 'SOH-VA',
-                },
-                {
-                    word: 'a bed',
-                    text: 'SÄN-KY',
-                },
-                {
-                    word: 'a shirt',
-                    text: 'PAI-TA',
-                },
-                {
-                    word: 'a hat',
-                    text: 'LAK-KI',
-                },
-                {
-                    word: 'a table',
-                    text: 'PÖY-TÄ',
-                },
-                {
-                    word: 'pants',
-                    text: 'HOU-SUT',
-                },
-                {
-                    word: 'a chair',
-                    text: 'TUO-LI',
-                },
-                {
-                    word: 'violin',
-                    text: 'VIU-LU',
-                },
-                {
-                    word: 'quitar',
-                    text: 'KI-TA-RA',
-                },
-                {
-                    word: 'a piano',
-                    text: 'PI-A-NO',
-                },
-                {
-                    word: 'a trumpet',
-                    text: 'TRUM-PET-TI',
-                },
-                {
-                    word: 'vacuum cleaner',
-                    text: 'I-MU-RI',
-                },
-                {
-                    word: 'gift box',
-                    text: 'LAH-JA',
-                },
-                {
-                    word: 'a book',
-                    text: 'KIR-JA',
-                },
-                {
-                    word: 'a pencil',
-                    text: 'KY-NÄ',
-                },
-                {
-                    word: 'mountain',
-                    text: 'VUO-RI',
-                },
-                {
-                    word: 'the number one',
-                    text: 'YK-SI',
-                },
-                {
-                    word: 'the number two',
-                    text: 'KAK-SI',
-                },
-                {
-                    word: 'the number three',
-                    text: 'KOL-ME',
-                },
-                {
-                    word: 'the color blue',
-                    text: 'SI-NI-NEN',
-                },
-                {
-                    word: 'the color green',
-                    text: 'VIH-REÄ',
-                }
+                "koira",
+                "kissa",
+                "talo",
+                "auto",
             ],
+            wordList: (
+                "sorsa papukaija muurahainen ilves jänis susi hämähäkki heinäsirkka hyttynen kettu karhu hirvi " +
+                "sudenkorento ampiainen mato poro leijona tiikeri " +
+                "sammakko käärme lisko leopardi kirahvi sarvikuono virtahepo elefantti apina villasukat " +
+                "tossut hellehattu lippalakki sukat paita housut kengät sateenvarjo pipo lapaset tietokone hylly matto verhot kännykkä kamera ovi ikkuna seinä pöytä sohva nojatuoli lattia katto lamppu kaappi lipasto peitto tyyny pallo nukke kynä paperi teroitin päärynä omena hampurilainen makkara lasi muki voi juusto haarukka veitsi lusikka ketsuppi sinappi"
+            ),
             client: null,
-            imagesFetched: null,
             success: null,
+            imageCache: {},
         }),
 
         mounted() {
+            this.words = this.words.concat(this.wordList.split(" "));
             const query = new URLSearchParams(window.location.search);
             if (!query.has('nocache')) {
                 window.location.search = '?nocache=' + Math.random();
@@ -333,8 +215,11 @@
 
         computed: {
             currentIndex() {
-                return this.words.findIndex((word) => word.word === this.word);
+                return this.words.indexOf(this.word)
             },
+            text() {
+                return this.hyphenate(this.word);
+            }
         },
 
         methods: {
@@ -344,7 +229,7 @@
                     setTimeout(() => {
                         this.success = null;
                         resolve();
-                    }, 2000);
+                    }, 1000);
                 });
             },
             async imageClick(image) {
@@ -357,53 +242,50 @@
                 }
                 this.loadNextWord();
             },
-            shouldFetchImages() {
-                if (!this.imagesFetched) {
-                    return true;
+            hyphenate(word) {
+                if (!word) {
+                    return '';
                 }
-                const now = new Date();
-                const diff = now.getTime() - this.imagesFetched.getTime();
-                return diff > 1000 * 30;  // 30 seconds
+                const finHyph = new FinnishHyphenator();
+                const ret = finHyph.hyphenateText(word);
+                console.log("Hyphenated", word, ret);
+                return ret;
             },
-            loadNextWord() {
+            async loadNextWord() {
                 if (!this.word) {
-                    const nextWord = this.words[0];
-                    this.word = nextWord.word;
-                    this.text = nextWord.text;
+                    this.word = this.words[0];
                 } else {
                     const currentIndex = this.currentIndex;
-                    const nextWord = this.words[currentIndex + 1];
-                    this.word = nextWord.word;
-                    this.text = nextWord.text;
+                    this.word = this.words[currentIndex + 1];
                 }
-                this.fetchImages();
+                await this.fetchImages();
             },
             async fetchImageThumbnail(word) {
-                const w = this.words.find(w => w.word === word);
-                if (w.thumbnail && !this.shouldFetchImages()) {
-                    return w.thumbnail;
+                const wIx = this.words.indexOf(word)
+                if (this.imageCache[wIx]) {
+                    return this.imageCache[wIx];
                 }
-                const items = await this.client.search("stock photo of " + word, { safe: '1' });
+                const items = await this.client.search(word);
                 if (items.length > 0) {
-                    // Select random from top 3
-                    let randomIndex = Math.floor(Math.random() * 3);
-                    if (randomIndex >= items.length) {
-                        randomIndex = items.length - 1;
-                    }
-                    w.thumbnail = items[randomIndex].image.thumbnailLink;
-                    this.imagesFetched = new Date();
-                    return items[randomIndex].image.thumbnailLink;
+                    // // Select random from top 3
+                    // let randomIndex = Math.floor(Math.random() * 3);
+                    // if (randomIndex >= items.length) {
+                    //     randomIndex = items.length - 1;
+                    // }
+                    const thumbnail = items[0].image.thumbnailLink;
+                    this.imageCache[wIx] = thumbnail;
+                    return thumbnail;
                 }
                 return ''
             },
             async fetchImages() {
                 // Get two different words that are not the same as the current word
-                const otherWords = this.words.filter(word => word.word !== this.word);
+                const otherWords = this.words.filter(word => word !== this.word);
                 // Randomize the order of the words
                 otherWords.sort(() => Math.random() - 0.5);
                 // Get the first two words
-                const otherWord1 = otherWords[0].word;
-                const otherWord2 = otherWords[1].word;
+                const otherWord1 = otherWords[0];
+                const otherWord2 = otherWords[1];
 
                 const promises = [
                     this.fetchImageThumbnail(this.word),
@@ -413,6 +295,11 @@
 
                 const thumbnails = await Promise.all(promises);
                 console.log(thumbnails);
+
+                for (const thumbnail of thumbnails) {
+                    var im = new Image();
+                    im.src = thumbnail;
+                }
 
                 const images = [
                     {
