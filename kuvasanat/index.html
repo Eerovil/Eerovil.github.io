@@ -24,6 +24,7 @@
             height: 30vh;
             width: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-transform: uppercase;
@@ -73,6 +74,7 @@
             <div v-else style="color: red;" >VÄÄ-RIN!</div>
         </div>
         <div id="top-part">
+            <progress :value="currentIndex" :max="words.length"></progress>
             <div id="word">
                 <div id="word-text">{{ text }}</div>
             </div>
@@ -325,7 +327,13 @@
             // Remove nocache if it exists
             window.history.replaceState({}, document.title, window.location.pathname);
             this.initClient();
-            this.loadRandomWord();
+            this.loadNextWord();
+        },
+
+        computed: {
+            currentIndex() {
+                return this.words.findIndex((word) => word.word === this.word);
+            },
         },
 
         methods: {
@@ -344,8 +352,9 @@
                     await this.result(true);
                 } else {
                     await this.result(false);
+                    this.word = null;
                 }
-                this.loadRandomWord();
+                this.loadNextWord();
             },
             shouldFetchImages() {
                 if (!this.imagesFetched) {
@@ -355,10 +364,17 @@
                 const diff = now.getTime() - this.imagesFetched.getTime();
                 return diff > 1000 * 30;  // 30 seconds
             },
-            loadRandomWord() {
-                const randomWord = this.words[Math.floor(Math.random() * this.words.length)];
-                this.word = randomWord.word;
-                this.text = randomWord.text;
+            loadNextWord() {
+                if (!this.word) {
+                    const nextWord = this.words[0];
+                    this.word = nextWord.word;
+                    this.text = nextWord.text;
+                } else {
+                    const currentIndex = this.currentIndex;
+                    const nextWord = this.words[currentIndex + 1];
+                    this.word = nextWord.word;
+                    this.text = nextWord.text;
+                }
                 this.fetchImages();
             },
             async fetchImageThumbnail(word) {
