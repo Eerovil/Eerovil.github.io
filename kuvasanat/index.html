@@ -203,6 +203,8 @@
 
         mounted() {
             this.words = this.words.concat(this.wordList.split(" "));
+            // Sort words by length
+            this.words.sort((a, b) => a.length - b.length);
             const query = new URLSearchParams(window.location.search);
             if (!query.has('nocache')) {
                 window.location.search = '?nocache=' + Math.random();
