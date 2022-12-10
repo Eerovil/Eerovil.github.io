@@ -1,8 +1,8 @@
 {
-    "name": "Sanat for Kids",
-    "short_name": "SanatApp",
+    "name": "Kuvasanat for Kids",
+    "short_name": "Kuvasanat",
     "display": "fullscreen",
-    "start_url": "/sanat/",
+    "start_url": "/kuvasanat/",
     "theme_color": "#673ab6",
     "background_color": "#111111",
     "icons": [
