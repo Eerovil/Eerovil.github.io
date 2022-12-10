@@ -318,6 +318,12 @@
         }),
 
         mounted() {
+            const query = new URLSearchParams(window.location.search);
+            if (!query.has('nocache')) {
+                window.location.search = '?nocache=' + Math.random();
+            }
+            // Remove nocache if it exists
+            window.history.replaceState({}, document.title, window.location.pathname);
             this.initClient();
             this.loadRandomWord();
         },
