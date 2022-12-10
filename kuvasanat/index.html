@@ -306,8 +306,8 @@
                 }
                 const items = await this.client.search("stock photo of " + word, { safe: '1' });
                 if (items.length > 0) {
-                    // Select random from top 10
-                    let randomIndex = Math.floor(Math.random() * 10);
+                    // Select random from top 3
+                    let randomIndex = Math.floor(Math.random() * 3);
                     if (randomIndex >= items.length) {
                         randomIndex = items.length - 1;
                     }
