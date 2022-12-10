@@ -382,7 +382,7 @@
                 if (w.thumbnail && !this.shouldFetchImages()) {
                     return w.thumbnail;
                 }
-                const items = await this.client.search("stock photo of " + word + " -gun", { safe: '1' });
+                const items = await this.client.search("stock photo of " + word, { safe: '1' });
                 if (items.length > 0) {
                     // Select random from top 3
                     let randomIndex = Math.floor(Math.random() * 3);
