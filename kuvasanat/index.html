@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="manifest" href="manifest.json">
+
+    <title>Sanat</title>
+    <style>
+        body,
+        html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: ui-monospace;
+        }
+        #top-part {
+            height: 30vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            font-size: 3rem;
+        }
+        #bottom-part {
+            height: 60vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #images {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #success {
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-size: 3rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        #success > div {
+            width: 100%;
+            text-align: center;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+<div id="vue-app">
+</div>
+<script type="template/html" id="template">
+    <div id="app-wrapper">
+        <div id="success" v-if="success !== null">
+            <div v-if="success" style="color: green;">OI-KEIN!</div>
+            <div v-else style="color: red;" >VÄÄ-RIN!</div>
+        </div>
+        <div id="top-part">
+            <div id="word">
+                <div id="word-text">{{ text }}</div>
+            </div>
+        </div>
+        <div id="bottom-part">
+            <div id="images">
+                <div v-for="image in images" class="image" @click="imageClick(image)">
+                    <img :src="image.src" />
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+    class Client {
+        constructor(id, apiKey) {
+            if (!id) {
+                throw new TypeError('Expected a Custom Search Engine ID');
+            }
+
+            if (!apiKey) {
+                throw new TypeError('Expected an API key');
+            }
+
+            this.endpoint = 'https://www.googleapis.com';
+            this.apiKey = apiKey;
+            this.id = id;
+        }
+
+        async search(query, options) {
+            if (!query) {
+                throw new TypeError('Expected a query');
+            }
+
+            const url = `${this.endpoint}/customsearch/v1?${this.buildQuery(query, options)}`;
+
+            const result = await axios.get(url);
+            return result.data.items;
+        }
+
+        buildQuery(query, options) {
+            options = options || {};
+
+            const result = {
+                q: query.replace(/\s/g, '+'),
+                searchType: 'image',
+                cx: this.id,
+                key: this.apiKey,
+            };
+
+            if (options.page) {
+                result.start = options.page;
+            }
+
+            if (options.size) {
+                result.imgSize = options.size;
+            }
+
+            if (options.type) {
+                result.imgType = options.type;
+            }
+
+            if (options.dominantColor) {
+                result.imgDominantColor = options.dominantColor;
+            }
+
+            if (options.colorType) {
+                result.imgColorType = options.colorType;
+            }
+
+            if (options.safe) {
+                result.safe = options.safe;
+            }
+
+            return new URLSearchParams(result).toString();
+        }
+    }
+    var app = new Vue({
+        el: '#vue-app',
+        template: "#template",
+        data: () => ({
+            text: null,
+            word: null,
+            images: [],
+            words: [
+                {
+                    word: 'a dog',
+                    text: 'KOI-RA',
+                },
+                {
+                    word: 'a cat',
+                    text: 'KIS-SA',
+                },
+                {
+                    word: 'a small house',
+                    text: 'TA-LO',
+                },
+                {
+                    word: 'a nice car',
+                    text: 'AU-TO',
+                },
+                {
+                    word: 'a big tree',
+                    text: 'PUU',
+                },
+                {
+                    word: 'a bicycle',
+                    text: 'PYÖ-RÄ',
+                },
+                {
+                    word: 'a clock',
+                    text: 'KEL-LO',
+                },
+                {
+                    word: 'a flower',
+                    text: 'KUK-KA',
+                },
+                {
+                    word: 'a bird',
+                    text: 'LIN-TU',
+                },
+                {
+                    word: 'a fish',
+                    text: 'KA-LA',
+                },
+                {
+                    word: 'a small boat',
+                    text: 'VE-NE',
+                },
+                {
+                    word: 'a train',
+                    text: 'JU-NA',
+                },
+                {
+                    word: 'an airplane',
+                    text: 'LEN-TO-KO-NE',
+                },
+                {
+                    word: 'a bus',
+                    text: 'BUS-SI',
+                },
+                {
+                    word: 'a space rocket',
+                    text: 'RA-KET-TI',
+                },
+            ],
+            client: null,
+            imagesFetched: null,
+            success: null,
+        }),
+
+        mounted() {
+            this.initClient();
+            this.loadRandomWord();
+        },
+
+        methods: {
+            result(result) {
+                return new Promise((resolve) => {
+                    this.success = result;
+                    setTimeout(() => {
+                        this.success = null;
+                        resolve();
+                    }, 2000);
+                });
+            },
+            async imageClick(image) {
+                console.log("Clicked image", image.word);
+                if (image.word === this.word) {
+                    await this.result(true);
+                } else {
+                    await this.result(false);
+                }
+                this.loadRandomWord();
+            },
+            shouldFetchImages() {
+                if (!this.imagesFetched) {
+                    return true;
+                }
+                const now = new Date();
+                const diff = now.getTime() - this.imagesFetched.getTime();
+                return diff > 1000 * 30;  // 30 seconds
+            },
+            loadRandomWord() {
+                const randomWord = this.words[Math.floor(Math.random() * this.words.length)];
+                this.word = randomWord.word;
+                this.text = randomWord.text;
+                this.fetchImages();
+            },
+            async fetchImageThumbnail(word) {
+                const w = this.words.find(w => w.word === word);
+                if (w.thumbnail && !this.shouldFetchImages()) {
+                    return w.thumbnail;
+                }
+                const items = await this.client.search(word, { safe: '1' });
+                if (items.length > 0) {
+                    // Select random from top 10
+                    let randomIndex = Math.floor(Math.random() * 10);
+                    if (randomIndex >= items.length) {
+                        randomIndex = items.length - 1;
+                    }
+                    w.thumbnail = items[randomIndex].image.thumbnailLink;
+                    this.imagesFetched = new Date();
+                    return items[randomIndex].image.thumbnailLink;
+                }
+                return ''
+            },
+            async fetchImages() {
+                // Get two different words that are not the same as the current word
+                const otherWords = this.words.filter(word => word.word !== this.word);
+                // Randomize the order of the words
+                otherWords.sort(() => Math.random() - 0.5);
+                // Get the first two words
+                const otherWord1 = otherWords[0].word;
+                const otherWord2 = otherWords[1].word;
+
+                const promises = [
+                    this.fetchImageThumbnail(this.word),
+                    this.fetchImageThumbnail(otherWord1),
+                    this.fetchImageThumbnail(otherWord2),
+                ];
+
+                const thumbnails = await Promise.all(promises);
+                console.log(thumbnails);
+
+                const images = [
+                    {
+                        src: thumbnails[0],
+                        word: this.word,
+                    },
+                    {
+                        src: thumbnails[1],
+                        word: otherWord1,
+                    },
+                    {
+                        src: thumbnails[2],
+                        word: otherWord2,
+                    },
+                ]
+                // Randomize the order of the images
+                images.sort(() => Math.random() - 0.5);
+                this.images = images;
+            },
+            initClient() {
+                this.client = new Client('0094db2db579343b9', 'AIzaSyATUT6iWvPVnbrrGQ5UDMgtBV455gVJnBk')
+            }
+        },
+    });
+</script>
+
+</body>
+</html>
