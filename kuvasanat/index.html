@@ -54,7 +54,7 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.99);
         }
         #success > div {
             width: 100%;
@@ -121,6 +121,7 @@
 
             const result = {
                 q: query.replace(/\s/g, '+'),
+                excludeTerms: 'gun sex violence death angry anger food',
                 searchType: 'image',
                 cx: this.id,
                 key: this.apiKey,
@@ -349,9 +350,9 @@
             async imageClick(image) {
                 console.log("Clicked image", image.word);
                 if (image.word === this.word) {
-                    await this.result(true);
+                    this.result(true);
                 } else {
-                    await this.result(false);
+                    this.result(false);
                     this.word = null;
                 }
                 this.loadNextWord();
