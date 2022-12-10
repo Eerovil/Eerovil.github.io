@@ -238,7 +238,7 @@
                     this.result(true);
                 } else {
                     this.result(false);
-                    this.word = null;
+                    this.word = this.words[this.currentIndex - 10];
                 }
                 this.loadNextWord();
             },
