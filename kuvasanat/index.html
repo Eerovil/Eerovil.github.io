@@ -82,7 +82,7 @@
 <script type="template/html" id="template">
     <div id="app-wrapper">
         <div id="success" v-if="success !== null">
-            <div v-if="success" style="color: green;">OI-KEIN!</div>
+            <div v-if="success" style="color: green;">{{ prevWord }}</div>
             <div v-else style="color: red;" >VÄÄ-RIN!</div>
         </div>
         <div id="top-part">
@@ -230,7 +230,10 @@
             },
             text() {
                 return this.hyphenate(this.word);
-            }
+            },
+            prevWord() {
+                return this.words[this.currentIndex - 1];
+            },
         },
 
         methods: {
