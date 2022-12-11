@@ -28,7 +28,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-transform: uppercase;
             font-size: 3rem;
         }
         #bottom-part {
@@ -195,9 +194,9 @@
                 "saippua saippuakupla " + 
                 "jogurtti täytekakku sipuli " +
                 "hamsteri lammas kana kukko " + 
-                "marsu kani undulaatti tipu ankka hanhi " +
+                "marsu undulaatti tipu ankka hanhi " +
                 "akvaario lehmä hevonen kalkkuna varis harakka " +
-                "poni sika vuohi talitiainen pöllö kotka " +
+                "poni sika vuohi talitiainen pöllö " +
                 "sorsa papukaija muurahainen ilves jänis susi hämähäkki heinäsirkka hyttynen kettu karhu hirvi " +
                 "sudenkorento ampiainen mato poro leijona tiikeri " +
                 "sammakko käärme lisko leopardi kirahvi sarvikuono virtahepo elefantti apina villasukat " +
@@ -220,6 +219,9 @@
             window.history.replaceState({}, document.title, window.location.pathname);
             this.initClient();
             this.loadNextWord();
+            if (window.speechSynthesis) {
+                speechSynthesis.getVoices();
+            }
         },
 
         computed: {
@@ -232,6 +234,25 @@
         },
 
         methods: {
+            say(m) {
+                const speak = (text) => {
+                    let myText = (text || '').toLowerCase()
+                    myText = myText.replace(/nn$/g, 'n');
+                    myText = myText.replace(/mm$/g, 'm');
+                    const utter = new SpeechSynthesisUtterance();
+                    utter.lang = 'fi-FI';
+                    utter.text = myText;
+                    utter.rate = 0.5;
+                    utter.pitch = 0.9;
+                    speechSynthesis.cancel();
+                    speechSynthesis.speak(utter);
+                }
+
+                if ((m || '').trim().length == 0) {
+                    return;
+                }
+                speak(m)
+            },
             result(result) {
                 return new Promise((resolve) => {
                     this.success = result;
@@ -245,6 +266,7 @@
                 console.log("Clicked image", image.word);
                 if (image.word === this.word) {
                     this.result(true);
+                    this.say(this.word)
                 } else {
                     this.result(false);
                     this.word = this.words[this.currentIndex - 5];
