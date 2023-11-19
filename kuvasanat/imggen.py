@@ -64,7 +64,21 @@ for word in wordlist:
                     "messages": [
                         {
                             "role": "user",
-                            "content": "You are a prompt generator bot. I will provide a word and you will generate a image generation prompt in english for me. The image is for a stock photo. Example 'A herd zebra (seepra) grazing in the African savannah, with a focus on its striking black and white stripes, set against a backdrop of tall grass and acacia trees.' Only answer with the result. Note: my requests are in finnish. Answer YES if you understand.",
+                            "content": (
+                                "You are a prompt generator bot. "
+                                "I will provide a word and you will generate a image generation prompt in english for me. "
+                                "The image is for a stock photo. "
+                                "Always assume that animals are not food, but alive instead. "
+                                "Make sure that the requested thing is easily visible in the result. "
+                                "Example 'A herd zebra (seepra) grazing in the African savannah, with a focus on its striking black and white stripes, set against a backdrop of tall grass and acacia trees.' "
+                                "Only answer with the result. "
+                                "If the word is a color, just generate a image of that color (no objects). "
+                                "If the word is an action, generate a image of a person doing that action. "
+                                "Try to only draw a single object or thing requested (not a group). "
+                                "The image can be a photo or a drawing. "
+                                "Note: my requests are in finnish. "
+                                "Answer YES if you understand."
+                            )
                         },
                         {
                             "role": "system",
