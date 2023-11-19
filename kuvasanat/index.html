@@ -302,6 +302,7 @@
                 const localImageURL = `imgs/${word}.png`;
                 // If local image exists, use it
                 const localImageExists = await axios.get(localImageURL).then(() => true).catch(() => false);
+                console.log("Local image exists", localImageExists, localImageURL);
                 if (localImageExists) {
                     this.imageCache[wIx] = localImageURL;
                     return localImageURL;
