@@ -299,6 +299,13 @@
                 if (this.imageCache[wIx]) {
                     return this.imageCache[wIx];
                 }
+                const localImageURL = `imgs/${word}.png`;
+                // If local image exists, use it
+                const localImageExists = await axios.get(localImageURL).then(() => true).catch(() => false);
+                if (localImageExists) {
+                    this.imageCache[wIx] = localImageURL;
+                    return localImageURL;
+                }
                 const items = await this.client.search(word);
                 if (items.length > 0) {
                     // // Select random from top 3
