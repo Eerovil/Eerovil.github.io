@@ -3,6 +3,9 @@ import json
 import base64
 import os
 
+# Get the API key from the environment
+API_KEY = os.environ["OPENAI_API_KEY"]
+
 # Get a prompt from the user
 print("Piirretään kuva!")
 # prompt = input("Anna sana: ")
@@ -36,13 +39,20 @@ wordlist = [
     "sorsa", "papukaija", "muurahainen", "ilves", "jänis", "susi", "hämähäkki", "heinäsirkka", "hyttynen", "kettu", "karhu", "hirvi",
     # Add more words here
     "koira", "kissa", "talo", "auto",
+    "sudenkorento", "ampiainen", "mato", "poro", "leijona", "tiikeri",
+    "sammakko", "käärme", "lisko", "leopardi", "kirahvi", "sarvikuono", "virtahepo", "elefantti", "apina", "villasukat",
+    "tossut", "hellehattu", "lippalakki", "sukat", "paita", "housut", "kengät", "sateenvarjo", "pipo", "lapaset", "tietokone", "hylly", "matto", "verhot", "kännykkä", "kamera", "ovi", "ikkuna", "seinä", "pöytä", "sohva", "nojatuoli", "lattia", "katto", "lamppu", "kaappi", "lipasto", "peitto", "tyyny", "pallo", "nukke", "kynä", "paperi", "teroitin", "päärynä", "omena", "hampurilainen", "makkara", "lasi", "muki", "voi", "juusto", "haarukka", "veitsi", "lusikka", "ketsuppi", "sinappi"
 ]
+
+# Sort list by word length
+wordlist.sort(key=len)
 
 for word in wordlist:
     file_exists = os.path.isfile(f"imgs/{word}.png")
     if not file_exists:
         prompt = word
     else:
+        print(f"Kuva sanalle {word} on jo olemassa, ohitetaan.")
         continue
 
     # Make a request to the GPT-3 API to generate a stable diffusion prompt
@@ -68,7 +78,7 @@ for word in wordlist:
                 }),
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer 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"
+                    "Authorization": f"Bearer {API_KEY}"
                 },
                 timeout=5
             )
@@ -78,7 +88,11 @@ for word in wordlist:
             continue
 
     # Extract the generated stable diffusion prompt from the API response
-    stable_diffusion_prompt = gpt3_response.json()['choices'][-1]['message']['content']
+    try:
+        stable_diffusion_prompt = gpt3_response.json()['choices'][-1]['message']['content']
+    except Exception:
+        print("GPT-3 API error: ", gpt3_response.json())
+        raise
 
     # stable_diffusion_prompt = "A fluffy tabby cat basking in the sunlight, with a playful expression and a paw raised in mid-swat, set against a backdrop of colorful autumn leaves."
 
