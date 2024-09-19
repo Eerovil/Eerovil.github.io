@@ -36,10 +36,12 @@ body{
     background-color: white;
 
     z-index: 1;
+
+    overflow: hidden;
 }
 
 .analog-clock::before{
-  content:'Tasan';
+  content:'Rolex';
   color: var(--theme-color);
   position: absolute;
   top:20%;
@@ -87,6 +89,19 @@ body{
 .number-10{ --rotate:300deg;}
 .number-11{ --rotate:330deg;}
 
+.tick {
+  position: absolute;
+  width: 102%;
+  height: 102%;
+  top: -1%;
+  left: -1%;
+  transform: rotate(var(--rotate));
+  font-size: 10px;
+  text-align: center;
+}
+.big-tick{
+  font-weight: bold;
+}
 
 .needle{
   --rotation:0;
@@ -137,8 +152,8 @@ body{
 }
 
 .number-minutes {
-  width: 107%;
-  height: 107%;
+  width: 535px;
+  height: 535px;
 
   display: flex;
   justify-content: center;

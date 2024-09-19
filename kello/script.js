@@ -27,14 +27,14 @@ function runClock(){
             transparent 0)`);
         
         minutesNumber.textContent = Math.round(min*60);
-        minutesNumber.style.setProperty('--rotation',(min - 0.015)*360);
+        minutesNumber.style.setProperty('--rotation',(min / 2)*360);
     } else {
         outsideInfo.style.setProperty('background-image',`conic-gradient(
             transparent ${min*360}deg, 
             rgb(205, 255, 255) 0)`);
         
         minutesNumber.textContent = Math.round((1-(min))*60);
-        minutesNumber.style.setProperty('--rotation',(min + 0.015)*360);
+        minutesNumber.style.setProperty('--rotation',(min + ((1-min) / 2))*360);
     }
 
     
@@ -42,3 +42,17 @@ function runClock(){
 }
 
 runClock();
+
+
+// Add 60 .tick elements to the .analog-clock element
+const analogClock = document.querySelector('.analog-clock');
+for (let i = 0; i < 60; i++) {
+  const tick = document.createElement('div');
+  tick.classList.add('tick');
+  tick.style.setProperty('--rotate', `${i * 6}deg`);
+  tick.innerHTML = '|'
+  if (i % 5 === 0) {
+    tick.classList.add('big-tick');
+  }
+  analogClock.appendChild(tick);
+}
