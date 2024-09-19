@@ -138,8 +138,8 @@ body{
 }
 
 .outside-info {
-  width: 570px;
-  height: 570px;
+  width: 580px;
+  height: 580px;
 
 
   border-radius: 50%;
@@ -152,8 +152,8 @@ body{
 }
 
 .number-minutes {
-  width: 535px;
-  height: 535px;
+  width: 530px;
+  height: 530px;
 
   display: flex;
   justify-content: center;
