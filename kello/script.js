@@ -7,7 +7,7 @@ const minutesNumber = document.querySelector('.number-minutes');
 setInterval(runClock,1000);
 
 function runClock(){
-  const time=new Date();
+  const time=new Date('2021-01-01T00:29:00');
   const sec=time.getSeconds()/60;
   const min=(sec+time.getMinutes())/60;
   const hrs=(min+time.getHours())/12;

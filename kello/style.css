@@ -152,8 +152,10 @@ body{
 }
 
 .number-minutes {
-  width: 530px;
-  height: 530px;
+  width: 580px;
+  height: 580px;
+
+  padding-top: 40px;
 
   display: flex;
   justify-content: center;
