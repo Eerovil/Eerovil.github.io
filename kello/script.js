@@ -55,8 +55,18 @@ function runClock() {
         minutesNumber.style.setProperty('--rotation', (min + ((1 - min) / 2)) * 360);
     }
 
-
-
+    const numbers = document.querySelectorAll('.number');
+    for (const number of numbers) {
+        number.classList.remove("close-number");
+        const num = parseInt(number.textContent);
+        let hr = Math.round(hrs * 12) % 12;
+        if (hr === 0) {
+            hr = 12;
+        }
+        if (num === hr) {
+            number.classList.add("close-number");
+        }
+    }
 }
 
 
