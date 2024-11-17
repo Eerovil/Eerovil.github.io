@@ -227,9 +227,9 @@
                     }
                     this.choice = newChoice;
                     speak(`${newChoice}`);
+                    window.noSleep.enable(); 
                 },
                 startAction() {
-                    window.noSleep.enable(); 
                     if (this.choice === null) {
                         return;
                     }
