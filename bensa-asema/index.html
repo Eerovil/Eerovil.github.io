@@ -207,6 +207,7 @@
                     { slug: 'moottori', image: 'moottori.svg' },
                     { slug: 'turbo', image: 'turbo.svg' },
                     { slug: 'kahvi', image: 'kahvi.svg' },
+                    { slug: 'vessa', image: 'vessa.svg' },
                 ],
 
                 message: null,
@@ -258,6 +259,9 @@
                     if (this.choice == 'kahvi') {
                         speak('juodaan kahvia')
                     }
+                    if (this.choice == 'vessa') {
+                        speak('käydään vessassa')
+                    }
                     console.log("STARTING!", this.choice)
                     this.progress = 0
                     setTimeout(this.increaseProgress, 2000)
@@ -283,6 +287,9 @@
                     }
                     if (this.choice == 'kahvi') {
                         speak('kahvi juotu!')
+                    }
+                    if (this.choice == 'vessa') {
+                        speak('vessassa käyty!')
                     }
                     axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-action?choice=' + this.choice)
                     console.log("DONE!")
