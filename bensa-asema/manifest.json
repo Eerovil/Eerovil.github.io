@@ -1,6 +1,7 @@
 {
     "name": "Bensa-asema",
     "short_name": "Bensa-asema",
+    "orientation": "landscape",
     "display": "fullscreen",
     "start_url": "/bensa-asema/",
     "theme_color": "#673ab6",
