@@ -326,7 +326,7 @@
                 },
                 increaseProgress() {
                     if (this.progress.toFixed(9).endsWith('000000000')) {
-                        const force = this.progress > 7;
+                        const force = this.progress > 6;
                         speak((this.progress + 1).toFixed(0), force)
                     }
                     this.progress += 0.1;
