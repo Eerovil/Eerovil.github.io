@@ -178,14 +178,20 @@
             oscillator.start(context.currentTime);
             oscillator.stop(context.currentTime + duration * 0.001);
         }
-        const speak = (text) => {
+        const speak = (text, force = true) => {
             console.log("SPEAKING:", text);
             const utter = new SpeechSynthesisUtterance();
             utter.lang = 'fi-FI';
             utter.text = text;
             utter.rate = 1;
             utter.pitch = 0.8;
-            speechSynthesis.cancel();
+            if (force) {
+                speechSynthesis.cancel();
+            } else {
+                if (speechSynthesis.speaking) {
+                    return;
+                }
+            } 
             speechSynthesis.speak(utter);
         }
         function sleep(ms) {
@@ -209,6 +215,7 @@
                     { slug: 'kahvi', image: 'kahvi.svg' },
                     { slug: 'vessa', image: 'vessa.svg' },
                     { slug: 'päiväunet', image: 'paivaunet.svg' },
+                    { slug: 'ruoka', image: 'ruoka.svg' },
                 ],
 
                 message: null,
@@ -269,6 +276,16 @@
                     if (this.choice == 'päiväunet') {
                         speak('nukutaan päiväunia')
                     }
+                    if (this.choice == 'ruoka') {
+                        const foods = [
+                            " tänään on ruokana lihapullia ja perunamuusia. Juomana on vesi.",
+                            " tänään on ruokana makaronilaatikkoa. Juomana on mehua ja vettä, ja lisukkeeena on ketsuppia.",
+                            " tänään on ruokana jauhelihakastiketta ja perunaa. Juomana on maitoa.",
+                            " tänään on ruokana hampurilainen, nugetit ja ranskalaisia. Juomana on pepsi.",
+                            " tänään on ruokana pitsaa. Juomana on kokista.",
+                        ]
+                        speak('syödään ruokaa.' + foods[Math.floor(Math.random() * foods.length)])
+                    }
                     console.log("STARTING!", this.choice)
                     this.progress = 0
                     setTimeout(this.increaseProgress, 2000)
@@ -301,12 +318,16 @@
                     if (this.choice == 'päiväunet') {
                         speak('päiväunet nukuttu! Nyt on virkeä olo!')
                     }
+                    if (this.choice == 'ruoka') {
+                        speak('ruoka syöty! Nyt on maha täynnä!')
+                    }
                     axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-action?choice=' + this.choice)
                     console.log("DONE!")
                 },
                 increaseProgress() {
                     if (this.progress.toFixed(9).endsWith('000000000')) {
-                        speak((this.progress + 1).toFixed(0))
+                        const force = this.progress > 7;
+                        speak((this.progress + 1).toFixed(0), force)
                     }
                     this.progress += 0.1;
                     beep(100 + (this.progress * 50), 10, 5);
