@@ -208,6 +208,7 @@
                     { slug: 'turbo', image: 'turbo.svg' },
                     { slug: 'kahvi', image: 'kahvi.svg' },
                     { slug: 'vessa', image: 'vessa.svg' },
+                    { slug: 'päiväunet', image: 'paivaunet.svg' },
                 ],
 
                 message: null,
@@ -228,6 +229,9 @@
                 },
                 selectChoice(newChoice) {
                     if (this.progress !== null) {
+                        return;
+                    }
+                    if (this.choice === newChoice) {
                         return;
                     }
                     this.choice = newChoice;
@@ -262,6 +266,9 @@
                     if (this.choice == 'vessa') {
                         speak('käydään vessassa')
                     }
+                    if (this.choice == 'päiväunet') {
+                        speak('nukutaan päiväunia')
+                    }
                     console.log("STARTING!", this.choice)
                     this.progress = 0
                     setTimeout(this.increaseProgress, 2000)
@@ -290,6 +297,9 @@
                     }
                     if (this.choice == 'vessa') {
                         speak('vessassa käyty!')
+                    }
+                    if (this.choice == 'päiväunet') {
+                        speak('päiväunet nukuttu! Nyt on virkeä olo!')
                     }
                     axios.get('https://eeron-lenovo.duckdns.org:5000/bensa-asema-action?choice=' + this.choice)
                     console.log("DONE!")
