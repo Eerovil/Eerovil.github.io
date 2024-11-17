@@ -26,6 +26,8 @@
             overflow-y: hidden;
             overflow-x: scroll;
             margin-top: 5%;
+            padding-left: 50px;
+            padding-right: 50px;
         }
 
         .lower-buttons {
@@ -86,6 +88,25 @@
             height: 100%;
             background-color: white;
         }
+
+        #scroll-left, #scroll-right {
+            position: absolute;
+            top: 50px;
+            height: 200px;
+            width: 50px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+        #scroll-left {
+            left: 0;
+        }
+        #scroll-right {
+            right: 0;
+        }
+
     </style>
 
 </head>
@@ -106,6 +127,10 @@
             </div>
             <div class="upper-buttons">
                 <div
+                    id="scroll-left"
+                    @click="scrollBy(-500, 0)"
+                ><</div>
+                <div
                     v-for="option in options"
                     :key="option.slug" class="btn"
                     @click="selectChoice(option.slug)"
@@ -114,6 +139,10 @@
                   class="btn-img"
                   :style="{backgroundImage: `url(${option.image})`}"
                 ></div><span>{{ option.slug }}</span></div>
+                <div
+                    id="scroll-right"
+                    @click="scrollBy(500, 0)"
+                >></div>
             </div>
             <div v-if="progress === null" class="lower-buttons">
                 <div
@@ -182,6 +211,14 @@
                 setTimeout(this.pingLenovo, 2000)
             },
             methods: {
+                scrollBy(x, y) {
+                    const upperButtons = document.querySelector('.upper-buttons');
+                    upperButtons.scroll({
+                        left: upperButtons.scrollLeft + x,
+                        top: upperButtons.scrollTop + y,
+                        behavior: 'smooth'
+                    });
+                },
                 selectChoice(newChoice) {
                     if (this.progress !== null) {
                         return;
