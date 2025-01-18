@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C accordion Highlight</title>
+    <style>
+        .circle {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            margin: 5px;
+            cursor: pointer;
+
+            border: 1px solid #000;
+        }
+
+        .circle.black {
+            background-color: rgb(96, 96, 96);
+            color: white;
+        }
+
+        .highlight {
+            background-color: #ff0;
+        }
+        .highlight.black {
+            background-color: rgb(169 164 13);
+            color: #fff;
+        }
+
+        .nohighlight {
+            opacity: 0.1;
+        }
+
+        .rootnote {
+            background-color: rgb(255, 0, 0);
+        }
+        .rootnote.black {
+            background-color: rgb(120, 9, 9);
+            color: #fff;
+        }
+
+        .row-2 {
+            margin-left: 20px;
+        }
+
+        .row-3 {
+            margin-left: 40px;
+        }
+        body {
+            padding: 5rem;
+        }
+
+        .keyboards {
+            display: flex;
+            padding-left: 50px;
+            width: 100%;
+        }
+
+        .keyboard {
+            margin-left: -35px;;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="keyboards">
+        <div class="keyboard">
+            <div class="row row-3">
+                <span class="circle">
+                    D
+                </span>
+                <span class="circle">
+                    F
+                </span>
+                <span class="circle">
+                    G#
+                </span>
+                <span class="circle">
+                    H
+                </span>
+            </div>
+            <div class="row row-2">
+                <span class="circle">
+                    C#
+                </span>
+                <span class="circle">
+                    E
+                </span>
+                <span class="circle">
+                    G
+                </span>
+                <span class="circle">
+                    A#
+                </span>
+            </div>
+            <div class="row row-1">
+                <span class="circle">
+                    C
+                </span>
+                <span class="circle">
+                    D#
+                </span>
+                <span class="circle">
+                    F#
+                </span>
+                <span class="circle">
+                    A
+                </span>
+            </div>
+            <div class="row row-3">
+                <span class="circle">
+                    D
+                </span>
+                <span class="circle">
+                    F
+                </span>
+                <span class="circle">
+                    G#
+                </span>
+                <span class="circle">
+                    H
+                </span>
+            </div>
+            <div class="row row-2">
+                <span class="circle">
+                    C#
+                </span>
+                <span class="circle">
+                    E
+                </span>
+                <span class="circle">
+                    G
+                </span>
+                <span class="circle">
+                    A#
+                </span>
+            </div>
+        </div>
+    </div>
+    <input type="text" id="input" oninput="selectKey(this.value)" value="C">
+
+    <script>
+        window.selectedKey = 'C';
+        function highlight(element) {
+            document.querySelectorAll('rect').forEach(rect => rect.classList.remove('highlight'));
+            element.classList.add('highlight');
+        }
+
+        // Add class .black to all .circle elements with a #
+        document.querySelectorAll('.circle').forEach(circle => {
+            if (circle.innerText.includes('#')) {
+                circle.classList.add('black');
+            }
+        });
+        // Create two duplicates of keyboard and append them as siblings
+        const keyboard = document.querySelector('.keyboard');
+        const keyboard2 = keyboard.cloneNode(true);
+        const keyboard3 = keyboard.cloneNode(true);
+        const keyboards = document.querySelector('.keyboards');
+        keyboard2.classList.add('keyboard2');
+        keyboard3.classList.add('keyboard3');
+        keyboards.appendChild(keyboard2);
+        keyboards.appendChild(keyboard3);
+        const keyMap = {
+            'C':  ['C',  'D',  'E', 'F',  'G',  'A',  'H'],  // Standard C major scale
+            'G':  ['C',  'D',  'E', 'F#', 'G',  'A',  'H'],  // F -> F#
+            'D':  ['C#', 'D',  'E', 'F#', 'G',  'A',  'H'],  // C -> C#
+            'A':  ['C#', 'D',  'E', 'F#', 'G#', 'A',  'H'],  // G -> G#
+            'E':  ['C#', 'D#', 'E', 'F#', 'G#', 'A',  'H'],  // D -> D#
+            'H':  ['C#', 'D#', 'E', 'F#', 'G#', 'A#', 'H'],  // A -> A#
+            'F#': ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'H'],  // E -> F
+            'C#': ['C', 'C#', 'D#', 'F', 'F#', 'G#', 'A#'],  // H -> C
+
+            'F':  ['C',  'D',  'E',  'F',  'G',  'A',  'A#'],   // H -> A#  (B)
+            'A#': ['C',  'D',  'D#', 'F',  'G',  'A',  'A#'],   // E -> D#  (Es)
+            'D#': ['C',  'D',  'D#', 'F',  'G',  'G#',  'A#'],  // A -> G# (As)
+            'G#': ['C',  'C#',  'D#', 'F',  'G',  'G#',  'A#'], // D -> C# (Des)
+            'C#': ['C',  'C#',  'D#', 'F',  'F#',  'G#',  'A#']  // G -> F# (Ges)
+        }
+
+        function selectKey(key) {
+            console.log("selectKey", key);
+            window.selectedKey = key;
+            const keys = keyMap[key] || [];
+            document.querySelector('#input').value = key;
+            document.querySelectorAll('.circle').forEach(circle => {
+                circle.classList.remove('highlight');
+                circle.classList.remove('rootnote');
+                circle.classList.remove('nohighlight');
+                // if (keys.includes(circle.innerText)) {
+                //     circle.classList.add('highlight');
+                // }
+                if (keys.includes(circle.innerText)) {
+                    // circle.classList.add('highlight');
+                } else {
+                    circle.classList.add('nohighlight');
+                }
+                if (circle.innerText === key) {
+                    circle.classList.add('rootnote');
+                }
+            });
+        }
+        selectKey('C');
+
+    </script>
+</body>
+
+</html>
