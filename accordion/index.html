@@ -53,6 +53,9 @@
         .row-3 {
             margin-left: 40px;
         }
+        .row {
+            display: flex;
+        }
         body {
             padding: 5rem;
         }
@@ -65,6 +68,14 @@
 
         .keyboard {
             margin-left: -35px;;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                transform: scale(0.75);
+                padding: 0rem !important;
+                margin-left: -50px;
+            }
         }
     </style>
 </head>
